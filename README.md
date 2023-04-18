@@ -6,3 +6,4 @@ This repo contains code that was used to program the GPIO pins of Raspberry Pi 4
 
 Contents:
 1. Testing the GPIO pins
+2. Coding
