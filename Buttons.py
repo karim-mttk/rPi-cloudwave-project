@@ -20,5 +20,5 @@ GPIO.setup(24, GPIO.IN)  # A# GPIO 8
 
 while True:
     if GPIO.input(2) == 0:
-        print("Hello")      # play sound
+        print("Sound")      # play sound
         time.sleep(0.25)
