@@ -1,6 +1,10 @@
 
 import RPi.GPIO as GPIO
 import time
+from pygame import mixer
+
+mixer.init()
+mixer.music.load('file.mp3')
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -21,6 +25,7 @@ GPIO.setup(24, GPIO.IN)  # A# GPIO 8
 while True:
     if GPIO.input(7) == 0:
         print("Sound C")      # play sound
+        mixer.music.play()
         time.sleep(0.25)
     if GPIO.input(13) == 0:
         print("Sound D")      # play sound
