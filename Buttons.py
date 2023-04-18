@@ -1,6 +1,7 @@
 
 import RPi.GPIO as GPIO
 import time
+import pygame
 from pygame import mixer
 
 mixer.init()
@@ -21,6 +22,8 @@ GPIO.setup(3, GPIO.IN)  # D# GPIO 2
 GPIO.setup(5, GPIO.IN)  # F# GPIO 3
 GPIO.setup(26, GPIO.IN)  # G# GPIO 7
 GPIO.setup(24, GPIO.IN)  # A# GPIO 8
+
+Sound1 = pygame.mixer.Sound('C.mp3')
 
 while True:
     if GPIO.input(7) == 0:
