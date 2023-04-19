@@ -23,60 +23,75 @@ GPIO.setup(5, GPIO.IN)  # F# GPIO 3
 GPIO.setup(26, GPIO.IN)  # G# GPIO 7
 GPIO.setup(24, GPIO.IN)  # A# GPIO 8
 
-Sound1 = pygame.mixer.Sound('C.mp3')        #different sounds
-Sound2 = pygame.mixer.Sound('D.mp3')
-Sound3 = pygame.mixer.Sound('E.mp3')
+# different chords
+C_chord = pygame.mixer.Sound('C.mp3')
+D_chord = pygame.mixer.Sound('D.mp3')
+E_chord = pygame.mixer.Sound('E.mp3')
+F_chord = pygame.mixer.Sound('F.mp3')
+G_chord = pygame.mixer.Sound('G.mp3')
+A_chord = pygame.mixer.Sound('A.mp3')
+B_chord = pygame.mixer.Sound('B.mp3')
+CS_chord = pygame.mixer.Sound('C#.mp3')
+DS_chord = pygame.mixer.Sound('D#.mp3')
+FS_chord = pygame.mixer.Sound('F#.mp3')
+GS_chord = pygame.mixer.Sound('G#.mp3')
+AS_chord = pygame.mixer.Sound('A#.mp3')
+
 index = 0
 
-SoundFiles = [Sound1, Sound2, Sound3]           # array of sound objects
+Piano = [C_chord, D_chord, E_chord, F_chord, G_chord, A_chord, B_chord, CS_chord, DS_chord, FS_chord, GS_chord, AS_chord]           # array of sound objects
+Guitar = [C_chord, D_chord, E_chord]           # array of sound objects
+SoundBoard = [Piano, Guitar]
+
+SoundBoard[index][1].play()
 
 while True:
     if GPIO.input(7) == 0:
         print("Sound C")      # play sound
-        SoundFiles[index].play()                # plays sound at index
+        SoundBoard[index][0].play()                # plays sound at index
         time.sleep(0.25)
     if GPIO.input(13) == 0:
         print("Sound D")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][1].play()   # plays sound at index
         time.sleep(0.25)
     if GPIO.input(15) == 0:
         print("Sound E")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][2].play()   # plays sound at index
         time.sleep(0.25)
     if GPIO.input(29) == 0:
         print("Sound F")  # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][3].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(31) == 0:
         print("Sound G")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][4].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(37) == 0:
         print("Sound A")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][5].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(23) == 0:
         print("Sound B")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][6].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(22) == 0:
         print("Sound C# ")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][7].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(3) == 0:
         print("Sound D#")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][8].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(5) == 0:
         print("Sound F#")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][9].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(26) == 0:
         print("Sound G#")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][10].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(24) == 0:
         print("Sound A#")      # play sound
-        SoundFiles[index].play()  # plays sound at index
+        SoundBoard[index][11].play()  # plays sound at index
         time.sleep(0.25)
 
