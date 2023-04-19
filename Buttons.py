@@ -39,6 +39,9 @@ AS_chord = pygame.mixer.Sound('A#.mp3')
 
 index = 0
 
+# idea: have a stored file.txt where names of the files are stored.
+# when initiating the program, these filenames are read, and put into the sound arrays
+
 # arrays of sound objects
 Piano = [C_chord, D_chord, E_chord, F_chord, G_chord, A_chord, B_chord, CS_chord, DS_chord, FS_chord, GS_chord, AS_chord]           # array of sound objects
 Guitar = [C_chord, D_chord, E_chord]
