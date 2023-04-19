@@ -46,8 +46,6 @@ Guitar = [C_chord, D_chord, E_chord]
 # collection of sound packets
 SoundBoard = [Piano, Guitar]
 
-SoundBoard[index][1].play()
-
 while True:
     if GPIO.input(7) == 0:
         print("Sound C")      # play sound
