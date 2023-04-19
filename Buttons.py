@@ -56,7 +56,7 @@ index = 0
 while True:
     # sudo code:
     # if variable_for_sound_change == 1 and index < len(SoundBoard) - 1:
-    #   index += 1
+    #   index = 1
     # elif variable_for_sound_change == 1 and index >= len(SoundBoard) - 1:
     #   index = 0
     if GPIO.input(7) == 0:
@@ -83,7 +83,7 @@ while True:
         print("Sound A")      # play sound
         SoundBoard[index][5].play()  # plays sound at index
         time.sleep(0.25)
-    if GPIO.input(23) == 0:
+    if GPIO.input(24) == 0:
         print("Sound B")      # play sound
         SoundBoard[index][6].play()  # plays sound at index
         time.sleep(0.25)
