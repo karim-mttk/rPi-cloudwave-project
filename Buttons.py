@@ -10,7 +10,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 # defining pins and GPIO mode
-GPIO.setup(7, GPIO.IN)  # C GPIO 4
+GPIO.setup(17, GPIO.IN)  # C GPIO 4         pin 17 kanske
 GPIO.setup(13, GPIO.IN)  # D GPIO 27
 GPIO.setup(15, GPIO.IN)  # E GPIO 22
 GPIO.setup(29, GPIO.IN)  # F GPIO 5
@@ -59,7 +59,7 @@ while True:
     #   index = 1
     # elif variable_for_sound_change == 1 and index >= len(SoundBoard) - 1:
     #   index = 0
-    if GPIO.input(7) == 0:
+    if GPIO.input(17) == 0:
         print("Sound C")      # play sound
         SoundBoard[index][0].play()                # plays sound at index
         time.sleep(0.25)
