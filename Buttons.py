@@ -37,35 +37,46 @@ while True:
         time.sleep(0.25)
     if GPIO.input(13) == 0:
         print("Sound D")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(15) == 0:
         print("Sound E")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(29) == 0:
         print("Sound F")  # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(31) == 0:
         print("Sound G")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(37) == 0:
         print("Sound A")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(23) == 0:
         print("Sound B")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(22) == 0:
         print("Sound C# ")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(3) == 0:
         print("Sound D#")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(5) == 0:
         print("Sound F#")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(26) == 0:
         print("Sound G#")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
     if GPIO.input(24) == 0:
         print("Sound A#")      # play sound
+        SoundFiles[index].play()  # plays sound at index
         time.sleep(0.25)
 
