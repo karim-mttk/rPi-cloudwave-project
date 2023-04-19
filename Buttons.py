@@ -5,11 +5,11 @@ import pygame
 from pygame import mixer
 
 mixer.init()
-mixer.music.load('file.mp3')
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
+# defining pins and GPIO mode
 GPIO.setup(7, GPIO.IN)  # C GPIO 4
 GPIO.setup(13, GPIO.IN)  # D GPIO 27
 GPIO.setup(15, GPIO.IN)  # E GPIO 22
@@ -37,8 +37,6 @@ FS_chord = pygame.mixer.Sound('F#.mp3')
 GS_chord = pygame.mixer.Sound('G#.mp3')
 AS_chord = pygame.mixer.Sound('A#.mp3')
 
-index = 0
-
 # idea: have a stored file.txt where names of the files are stored.
 # when initiating the program, these filenames are read, and put into the sound arrays
 
@@ -48,6 +46,12 @@ Guitar = [C_chord, D_chord, E_chord]
 
 # collection of sound packets
 SoundBoard = [Piano, Guitar]
+
+# example with 8 custom sound packets
+# SoundBoard = [Custom1, Custom2, Custom3, Custom4, Custom5, Custom6, Custom7, Custom8]
+
+# sound board array index
+index = 0
 
 while True:
     # sudo code:
