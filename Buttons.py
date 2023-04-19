@@ -23,12 +23,17 @@ GPIO.setup(5, GPIO.IN)  # F# GPIO 3
 GPIO.setup(26, GPIO.IN)  # G# GPIO 7
 GPIO.setup(24, GPIO.IN)  # A# GPIO 8
 
-Sound1 = pygame.mixer.Sound('C.mp3')
+Sound1 = pygame.mixer.Sound('C.mp3')        #different sounds
+Sound2 = pygame.mixer.Sound('D.mp3')
+Sound3 = pygame.mixer.Sound('E.mp3')
+index = 0
+
+SoundFiles = [Sound1, Sound2, Sound3]           # array of sound objects
 
 while True:
     if GPIO.input(7) == 0:
         print("Sound C")      # play sound
-        mixer.music.play()
+        SoundFiles[index].play()                # plays sound at index
         time.sleep(0.25)
     if GPIO.input(13) == 0:
         print("Sound D")      # play sound
