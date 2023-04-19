@@ -47,6 +47,11 @@ Guitar = [C_chord, D_chord, E_chord]
 SoundBoard = [Piano, Guitar]
 
 while True:
+    # sudo code:
+    # if variable_for_sound_change == 1 and index < len(SoundBoard) - 1:
+    #   index += 1
+    # elif variable_for_sound_change == 1 and index >= len(SoundBoard) - 1:
+    #   index = 0
     if GPIO.input(7) == 0:
         print("Sound C")      # play sound
         SoundBoard[index][0].play()                # plays sound at index
