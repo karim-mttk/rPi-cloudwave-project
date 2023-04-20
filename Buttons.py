@@ -20,7 +20,7 @@ GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # B GPIO 23
 GPIO.setup(25, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # C# GPIO 25
 GPIO.setup(2, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # D# GPIO 2
 GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F# GPIO 3
-GPIO.setup(7, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
+GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
 GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
 # alternative method for selecting files
@@ -84,51 +84,51 @@ try:
         #   index = 1
         # elif variable_for_sound_change == 1 and index >= len(SoundBoard) - 1:
         #   index = 0
-        if GPIO.input(17) == 0:
+        if GPIO.input(4) == 0:
             print("Sound C")      # play sound
             SoundBoard[0][index].play()                # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(13) == 0:
+        if GPIO.input(27) == 0:
             print("Sound D")      # play sound
             SoundBoard[1][index].play()   # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(15) == 0:
+        if GPIO.input(22) == 0:
             print("Sound E")      # play sound
             SoundBoard[2][index].play()   # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(29) == 0:
+        if GPIO.input(5) == 0:
             print("Sound F")  # play sound
             SoundBoard[3][index].play()  # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(31) == 0:
+        if GPIO.input(6) == 0:
             print("Sound G")      # play sound
             SoundBoard[4][index].play()  # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(37) == 0:
+        if GPIO.input(26) == 0:
             print("Sound A")      # play sound
             SoundBoard[5][index].play()  # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(24) == 0:
+        if GPIO.input(23) == 0:
             print("Sound B")      # play sound
             SoundBoard[6][index].play()  # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(22) == 0:
+        if GPIO.input(25) == 0:
             print("Sound C# ")      # play sound
             SoundBoard[7][index].play()  # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(3) == 0:
+        if GPIO.input(2) == 0:
             print("Sound D#")      # play sound
             SoundBoard[8][index].play()  # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(5) == 0:
+        if GPIO.input(3) == 0:
             print("Sound F#")      # play sound
             SoundBoard[9][index].play()  # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(26) == 0:
+        if GPIO.input(24) == 0:
             print("Sound G#")      # play sound
             SoundBoard[10][index].play()  # plays sound at index
             time.sleep(0.25)
-        if GPIO.input(24) == 0:
+        if GPIO.input(8) == 0:
             print("Sound A#")      # play sound
             SoundBoard[11][index].play()  # plays sound at index
             time.sleep(0.25)
