@@ -10,20 +10,20 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 # defining pins and GPIO mode
-GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # C GPIO 4         pin 17 kanske
-GPIO.setup(13, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # D GPIO 27
-GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # E GPIO 22
-GPIO.setup(29, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F GPIO 5
-GPIO.setup(31, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G GPIO 6
-GPIO.setup(37, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A GPIO 26
-GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # B GPIO 23
-GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # C# GPIO 25
-GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # D# GPIO 2
-GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F# GPIO 3
-GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
-GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
+GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # C GPIO 4         pin 17 kanske
+GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # D GPIO 27
+GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # E GPIO 22
+GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F GPIO 5
+GPIO.setup(6, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G GPIO 6
+GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A GPIO 26
+GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # B GPIO 23
+GPIO.setup(25, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # C# GPIO 25
+GPIO.setup(2, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # D# GPIO 2
+GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F# GPIO 3
+GPIO.setup(7, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
+GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
-# alternative method for selceting files
+# alternative method for selecting files
 Chords = [{"note": "C"},
           {"note": "D"},
           {"note": "E"},
