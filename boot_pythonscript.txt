@@ -1,0 +1,26 @@
+Create a new file for the service by running the command sudo nano /etc/systemd/system/my_script.service in the terminal. You can replace "my_script" with any name you want to give to the service.
+
+In the text editor that opens, add the following lines to the file:
+
+
+[Unit]
+Description=My Python Script
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python3 /path/to/your/script.py
+
+[Install]
+WantedBy=multi-user.target
+Replace "My Python Script" with a description of your script, and replace "/path/to/your/script.py" with the actual path to your Python script.
+
+Save the file and exit the text editor.
+
+Reload the systemd daemon to recognize the new service by running the command sudo systemctl daemon-reload.
+
+Enable the service to run at boot time by running the command sudo systemctl enable my_script.service. Replace "my_script" with the name of your service.
+
+Start the service by running the command sudo systemctl start my_script.service. This will start the Python script.
+
+You can check the status of the service by running the command sudo systemctl status my_script.service.
