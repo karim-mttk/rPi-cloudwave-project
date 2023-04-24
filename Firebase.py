@@ -27,7 +27,7 @@ blob.download_to_filename(index_temp_file)
 with open(index_temp_file) as file:
     index = file.read()
 
-# alternative method for selecting files
+# alternative method for selecting chords
 Chords = [{"note": "C"},
           {"note": "D"},
           {"note": "E"},
