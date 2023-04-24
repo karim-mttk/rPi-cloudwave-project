@@ -12,26 +12,48 @@ firebase_admin.initialize_app(cred, {
 bucket = storage.bucket()
 
 # specify the path to the audio file on your local machine
+# change to RPi storage path later
 file_path = r'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\Sound test/C_Major_Chord.wav'
 
 # download index number
 index_path = 'index.txt'
+# change to RPi storage path later
 index_temp_file = r'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/index.txt'
 blob = bucket.blob(index_path)
 blob.download_to_filename(index_temp_file)
 with open(index_temp_file) as file:
     index = file.read()
 
-# specify the path to the audio file in Firebase Storage
-storage_path = rf'sounds{index}/folder/audio-file.mp3'
+# alternative method for selecting files
+Chords = [{"note": "C"},
+          {"note": "D"},
+          {"note": "E"},
+          {"note": "F"},
+          {"note": "G"},
+          {"note": "A"},
+          {"note": "B"},
+          {"note": "C#"},
+          {"note": "D#"},
+          {"note": "F#"},
+          {"note": "G#"},
+          {"note": "A#"}]
+
+
+# download all chords and put in local storage
+for note in Chords:
+    # specify the path to the audio file in Firebase Storage
+    storage_path = rf"sounds{index}/folder/{note['note']}.wav"
+
+    temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/{note['note']}.wav"
+    blob = bucket.blob(storage_path)
+    blob.download_to_filename(temp_file)
 
 # upload the audio file to Firebase Storage
 # blob = bucket.blob(storage_path)
 # blob.upload_from_filename(file_path)
 
-print('File {} uploaded to {}.'.format(file_path, storage_path))
-
 # download the sound file to a temporary file
+# change to RPi storage path later
 temp_file = r'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/sound-file.mp3'
 blob = bucket.blob(storage_path)
 blob.download_to_filename(temp_file)
