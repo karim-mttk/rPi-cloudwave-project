@@ -41,10 +41,16 @@ GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 index_path = 'index.txt'
 # change to RPi storage path later
 index_temp_file = r'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/index.txt'
-blob = bucket.blob(index_path)
-blob.download_to_filename(index_temp_file)
-with open(index_temp_file) as file:
-    index = file.read()
+
+# function to redefine index in main loop later
+def Check_index():
+    blob = bucket.blob(index_path)
+    blob.download_to_filename(index_temp_file)
+    with open(index_temp_file) as file:
+        return int(file.read())
+
+
+chord_index = Check_index()
 
 # selecting chords
 Chords = [{"note": "C"},
@@ -60,31 +66,36 @@ Chords = [{"note": "C"},
           {"note": "G#"},
           {"note": "A#"}]
 
+# function to redefine chords in main loop later
 # download all chords and put in local storage
-SoundBoard = {}
-IndexPath = 0
-for note in Chords:
-    # specify the path to the audio file in Firebase Storage
-    storage_path = rf"sounds{index}/folder/{note['note']}.mp3"
+def Download_Chords(index):
+    FXBoard = {}
+    IndexPath = 0
+    for note in Chords:
+        # specify the path to the audio file in Firebase Storage
+        storage_path = rf"sounds{index}/folder/{note['note']}.mp3"
 
-    # download the sound file to a temporary file
-    # change to RPi storage path later
-    temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/{note['note']}.mp3"
-    blob = bucket.blob(storage_path)
-    blob.download_to_filename(temp_file)
+        # download the sound file to a temporary file
+        # change to RPi storage path later
+        temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/{note['note']}.mp3"
+        blob = bucket.blob(storage_path)
+        blob.download_to_filename(temp_file)
 
-    # load the sound file into Pygame mixer and save it
-    SoundBoard[IndexPath] = pygame.mixer.Sound(temp_file)
-    IndexPath += 1
+        # load the sound file into Pygame mixer and save it
+        FXBoard[IndexPath] = pygame.mixer.Sound(temp_file)
+        IndexPath += 1
+    return FXBoard
+
+
+SoundBoard = Download_Chords(chord_index)
 
 index = 0
 try:
     while True:
-        # sudo code:
-        # if variable_for_sound_change == 1 and index < len(SoundBoard) - 1:
-        #   index = 1
-        # elif variable_for_sound_change == 1 and index >= len(SoundBoard) - 1:
-        #   index = 0
+        # change soundboard if index differ
+        if chord_index != Check_index():
+            chord_index = Check_index
+            SoundBoard = Download_Chords(chord_index)
         if GPIO.input(4) == 0:
             print("Sound C")      # play sound
             SoundBoard[index].play()                # plays sound at index
