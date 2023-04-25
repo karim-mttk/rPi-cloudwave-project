@@ -145,7 +145,7 @@ try:
             SoundBoard[index].play()  # plays sound at index
             time.sleep(0.25)
 except KeyboardInterrupt:
-    mixer.stop()
+    pygame.mixer.stop()
     GPIO.cleanup()
 
 
