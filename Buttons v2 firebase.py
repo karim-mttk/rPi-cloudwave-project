@@ -9,7 +9,6 @@ from firebase_admin import credentials, storage
 # pygame setup
 pygame.mixer.init()
 
-
 # firebase setup
 cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
 firebase_admin.initialize_app(cred, {
