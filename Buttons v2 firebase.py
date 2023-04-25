@@ -42,7 +42,7 @@ index_path = 'index.txt'
 # change to RPi storage path later
 index_temp_file = r'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/index.txt'
 
-# function to redefine index in main loop later
+# function to redefine index from firebase in main loop later
 def Check_index():
     blob = bucket.blob(index_path)
     blob.download_to_filename(index_temp_file)
@@ -66,7 +66,7 @@ Chords = [{"note": "C"},
           {"note": "G#"},
           {"note": "A#"}]
 
-# function to redefine chords in main loop later
+# function to redefine chords from firebase in main loop later
 # download all chords and put in local storage
 def Download_Chords(index):
     FXBoard = {}
@@ -96,6 +96,8 @@ try:
         if chord_index != Check_index():
             chord_index = Check_index
             SoundBoard = Download_Chords(chord_index)
+
+        # if button pressed, play sound
         if GPIO.input(4) == 0:
             print("Sound C")      # play sound
             SoundBoard[index].play()                # plays sound at index
