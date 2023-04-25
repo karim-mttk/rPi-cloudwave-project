@@ -64,7 +64,7 @@ def Download_Chords(index):
     FXBoard = []
     for note in Chords:
         # specify the path to the audio file in Firebase Storage
-        storage_path = rf"sounds{index}/folder/{note['note']}.mp3"
+        storage_path = rf"sounds{index}/folder/{note['note']}.wav"
 
         # download the sound file to a temporary file
         # change to RPi storage path later
