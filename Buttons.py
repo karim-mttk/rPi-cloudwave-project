@@ -24,18 +24,9 @@ GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
 GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
 # alternative method for selecting files
-Chords = [{"note": "C"},
-          {"note": "D"},
-          {"note": "E"},
-          {"note": "F"},
-          {"note": "G"},
-          {"note": "A"},
-          {"note": "B"},
-          {"note": "C#"},
-          {"note": "D#"},
-          {"note": "F#"},
-          {"note": "G#"},
-          {"note": "A#"}]
+Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
+          {"note": "G"}, {"note": "A"}, {"note": "B"}, {"note": "C#"},
+          {"note": "D#"}, {"note": "F#"}, {"note": "G#"}, {"note": "A#"}]
 
 # Load chord sound files
 FXBoard = {}

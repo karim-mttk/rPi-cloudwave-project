@@ -7,9 +7,7 @@ import pygame
 pygame.mixer.init()
 
 cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
-firebase_admin.initialize_app(cred, {
-    'storageBucket': 'cloudwave-test.appspot.com'
-})
+firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.com'})
 
 # create a Firebase Storage client
 bucket = storage.bucket()
@@ -28,29 +26,20 @@ with open(index_temp_file) as file:
     index = file.read()
 
 # alternative method for selecting chords
-Chords = [{"note": "C"},
-          {"note": "D"},
-          {"note": "E"},
-          {"note": "F"},
-          {"note": "G"},
-          {"note": "A"},
-          {"note": "B"},
-          {"note": "C#"},
-          {"note": "D#"},
-          {"note": "F#"},
-          {"note": "G#"},
-          {"note": "A#"}]
+Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
+          {"note": "G"}, {"note": "A"}, {"note": "B"}, {"note": "C#"},
+          {"note": "D#"}, {"note": "F#"}, {"note": "G#"}, {"note": "A#"}]
 
 # download all chords and put in local storage
-all_chords = {}
+all_chords = []
 IndexPath = 0
 for note in Chords:
     # specify the path to the audio file in Firebase Storage
-    storage_path = rf"sounds{index}/folder/{note['note']}.mp3"
+    storage_path = rf"sounds{index}/folder/{note['note']}.wav"
 
     # download the sound file to a temporary file
     # change to RPi storage path later
-    temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/{note['note']}.mp3"
+    temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/{note['note']}.wav"
     blob = bucket.blob(storage_path)
     blob.download_to_filename(temp_file)
 

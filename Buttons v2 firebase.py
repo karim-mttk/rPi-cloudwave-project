@@ -10,10 +10,8 @@ from firebase_admin import credentials, storage
 pygame.mixer.init()
 
 # firebase setup
-cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
-firebase_admin.initialize_app(cred, {
-    'storageBucket': 'cloudwave-test.appspot.com'
-})
+cred = credentials.Certificate(r"firebasekey.json")
+firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.com'})
 
 # create a Firebase Storage client
 bucket = storage.bucket()
@@ -39,9 +37,11 @@ GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 # download index number
 index_path = 'index.txt'
 # change to RPi storage path later
-index_temp_file = r'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/index.txt'
+index_temp_file = r'index.txt'
 
 # function to redefine index from firebase in main loop later
+
+
 def Check_index():
     blob = bucket.blob(index_path)
     blob.download_to_filename(index_temp_file)
@@ -52,37 +52,28 @@ def Check_index():
 chord_index = Check_index()
 
 # selecting chords
-Chords = [{"note": "C"},
-          {"note": "D"},
-          {"note": "E"},
-          {"note": "F"},
-          {"note": "G"},
-          {"note": "A"},
-          {"note": "B"},
-          {"note": "C#"},
-          {"note": "D#"},
-          {"note": "F#"},
-          {"note": "G#"},
-          {"note": "A#"}]
+Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
+          {"note": "G"}, {"note": "A"}, {"note": "B"}, {"note": "C#"},
+          {"note": "D#"}, {"note": "F#"}, {"note": "G#"}, {"note": "A#"}]
 
 # function to redefine chords from firebase in main loop later
 # download all chords and put in local storage
+
+
 def Download_Chords(index):
-    FXBoard = {}
-    IndexPath = 0
+    FXBoard = []
     for note in Chords:
         # specify the path to the audio file in Firebase Storage
         storage_path = rf"sounds{index}/folder/{note['note']}.mp3"
 
         # download the sound file to a temporary file
         # change to RPi storage path later
-        temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp/{note['note']}.mp3"
+        temp_file = rf"sounds{index}/folder/{note['note']}.wav"
         blob = bucket.blob(storage_path)
         blob.download_to_filename(temp_file)
 
         # load the sound file into Pygame mixer and save it
-        FXBoard[IndexPath] = pygame.mixer.Sound(temp_file)
-        IndexPath += 1
+        FXBoard.append(pygame.mixer.Sound(temp_file))
     return FXBoard
 
 
