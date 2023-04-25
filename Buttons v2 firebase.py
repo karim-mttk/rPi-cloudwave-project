@@ -68,7 +68,7 @@ def Download_Chords(index):
 
         # download the sound file to a temporary file
         # change to RPi storage path later
-        temp_file = rf"sounds{index}/folder/{note['note']}.wav"
+        temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
         blob = bucket.blob(storage_path)
         blob.download_to_filename(temp_file)
 
