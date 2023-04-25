@@ -43,10 +43,13 @@ index_temp_file = r'index.txt'
 
 
 def Check_index():
-    blob = bucket.blob(index_path)
-    blob.download_to_filename(index_temp_file)
-    with open(index_temp_file) as file:
-        return int(file.read())
+    try:
+        blob = bucket.blob(index_path)
+        blob.download_to_filename(index_temp_file)
+        with open(index_temp_file) as file:
+            return int(file.read())
+    except Exception:
+        return -1
 
 
 chord_index = Check_index()
@@ -82,7 +85,7 @@ SoundBoard = Download_Chords(chord_index)
 try:
     while True:
         # change soundboard if index differ
-        if chord_index != Check_index():
+        if chord_index != Check_index() & Check_index() != -1:
             chord_index = Check_index
             SoundBoard = Download_Chords(chord_index)
 
