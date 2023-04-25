@@ -57,7 +57,7 @@ for note in Chords:
     # load the sound file into Pygame mixer and save it
     all_chords[IndexPath] = pygame.mixer.Sound(temp_file)
     IndexPath += 1
-# print(all_chords)
+
 # upload the audio file to Firebase Storage
 # blob = bucket.blob(storage_path)
 # blob.upload_from_filename(file_path)
