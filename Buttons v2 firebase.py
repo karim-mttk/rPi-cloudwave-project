@@ -66,6 +66,7 @@ def Download_Chords(index):
 
         # load the sound file into Pygame mixer and save it
         FXBoard.append(pygame.mixer.Sound(temp_file))
+        print(f"finished downloading {note['note']}.wav")
     return FXBoard
 
 
