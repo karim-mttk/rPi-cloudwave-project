@@ -39,7 +39,7 @@ GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
 
 def Check_index():
-    return int(root.child('index').get())
+    return root.child('index').get()
 
 
 chord_index = Check_index()

@@ -27,7 +27,7 @@ root = db.reference("/")
 #     index = file.read()
 
 def Check_index():
-    return int(root.child('index').get())
+    return root.child('index').get()
 
 
 index = Check_index()
@@ -55,7 +55,6 @@ Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
     # load the sound file into Pygame mixer and save it
 #     all_chords.append(pygame.mixer.Sound(temp_file))
 #     IndexPath += 1
-
 
 
 
