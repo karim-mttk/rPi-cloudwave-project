@@ -37,9 +37,93 @@ GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
 # function to redefine index from firebase in main loop later
 
+macAdress = "dc:a6:32:b4:da:a5"
+
+
+# add new button, "universal knapp". To end typen password, for example
+
+
+def type_synth_password():
+    Password = ""
+    while True:
+        if GPIO.input(4) == 0:
+            print("Sound C")
+            Password += "C"
+            time.sleep(0.25)
+        if GPIO.input(27) == 0:
+            print("Sound D")
+            Password += "D"
+            time.sleep(0.25)
+        if GPIO.input(22) == 0:
+            print("Sound E")
+            Password += "E"
+            time.sleep(0.25)
+        if GPIO.input(5) == 0:
+            print("Sound F")
+            Password += "F"
+            time.sleep(0.25)
+        if GPIO.input(6) == 0:
+            print("Sound G")
+            Password += "G"
+            time.sleep(0.25)
+        if GPIO.input(26) == 0:
+            print("Sound A")
+            Password += "A"
+            time.sleep(0.25)
+        if GPIO.input(23) == 0:
+            print("Sound B")
+            Password += "B"
+            time.sleep(0.25)
+        if GPIO.input(25) == 0:
+            print("Sound C# ")
+            Password += "C#"
+            time.sleep(0.25)
+        if GPIO.input(2) == 0:
+            print("Sound D#")
+            Password += "D#"
+            time.sleep(0.25)
+        if GPIO.input(3) == 0:
+            print("Sound F#")
+            Password += "F#"
+            time.sleep(0.25)
+        if GPIO.input(24) == 0:
+            print("Sound G#")
+            Password += "G#"
+            time.sleep(0.25)
+        if GPIO.input(8) == 0:
+            print("Sound A#")
+            Password += "A#"
+            time.sleep(0.25)
+        if universal_button() == 0:     # stop typing password
+            return Password
+
+
+def validate_synth_password():
+    while True:
+        try:
+            # find device, find current user, and find current user password
+            Device = root.child(f'{macAdress}')
+            CurrentUser = Device.child('Current User').get()
+            User = Device.child(f'{CurrentUser}')
+            User_password = User.child('synthPassword').get()
+
+            Input_password = type_synth_password()
+            if Input_password == User_password:
+                break
+            else:
+                print("Wrong password")
+        except:
+            print("Exception, user not found")
+    return CurrentUser
+
+
+current_user = validate_synth_password()
+
+# download index number
+
 
 def Check_index():
-    return root.child('index').get()
+    return root.child(f'{macAdress}').child(f'{current_user}').child('index').get()
 
 
 chord_index = Check_index()
@@ -57,7 +141,8 @@ def Download_Chords(index):
     FXBoard = []
     for note in Chords:
         # specify the path to the audio file in Firebase Storage
-        storage_path = rf"sounds{index}/folder/{note['note']}.wav"
+        # storage_path = rf"sounds{index}/folder/{note['note']}.wav"
+        storage_path = rf"{current_user}/sounds{index}/{note['note']}.wav"
 
         # download the sound file to a temporary file
         temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
