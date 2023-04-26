@@ -4,17 +4,18 @@ import time
 import pygame
 
 import firebase_admin
-from firebase_admin import credentials, storage
+from firebase_admin import credentials, storage, db
 
 # pygame setup
 pygame.mixer.init()
 
 # firebase setup
 cred = credentials.Certificate(r"firebasekey.json")
-firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.com'})
+firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.com', 'databaseURL': 'https://cloudwave-test-default-rtdb.europe-west1.firebasedatabase.app'})
 
 # create a Firebase Storage client
 bucket = storage.bucket()
+root = db.reference("/")
 
 # GPIO setup
 GPIO.setwarnings(False)
@@ -34,22 +35,11 @@ GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F# GPIO 3
 GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
 GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
-# download index number
-index_path = 'index.txt'
-# change to RPi storage path later
-index_temp_file = r'index.txt'
-
 # function to redefine index from firebase in main loop later
 
 
 def Check_index():
-    try:
-        blob = bucket.blob(index_path)
-        blob.download_to_filename(index_temp_file)
-        with open(index_temp_file) as file:
-            return int(file.read())
-    except Exception:
-        return -1
+    return int(root.child('index').get())
 
 
 chord_index = Check_index()
@@ -70,7 +60,6 @@ def Download_Chords(index):
         storage_path = rf"sounds{index}/folder/{note['note']}.wav"
 
         # download the sound file to a temporary file
-        # change to RPi storage path later
         temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
         blob = bucket.blob(storage_path)
         blob.download_to_filename(temp_file)
@@ -85,8 +74,8 @@ SoundBoard = Download_Chords(chord_index)
 try:
     while True:
         # change soundboard if index differ
-        if chord_index != Check_index() & Check_index() != -1:
-            chord_index = Check_index
+        if chord_index != Check_index():
+            chord_index = Check_index()
             SoundBoard = Download_Chords(chord_index)
 
         # if button pressed, play sound

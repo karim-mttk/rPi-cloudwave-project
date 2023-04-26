@@ -91,10 +91,9 @@ while True:
         if index != Check_index():
             index = Check_index()
             SoundBoard = Download_Chords(index)
-        else:
-            SoundBoard[i].play()
-            i += 1
-            print(Check_index())
-            while pygame.mixer.get_busy():
-                pass
+        SoundBoard[i].play()
+        i += 1
+        print(Check_index())
+        while pygame.mixer.get_busy():
+            pass
 
