@@ -2,8 +2,5 @@
 II1302
 KTH
 
-This repo contains code that was used to program the GPIO pins of Raspberry Pi 4. The code is writted in Python and the libraries used for the pins work with Python scripts. 
-
-Contents:
-1. Testing the GPIO pins
-2. Coding
+This branch contains the basic code for the functioning of equalizer. 
+4 primary options include the controls for Volume, Bass, Mid & Treble.
