@@ -22,7 +22,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 # defining pins and GPIO mode
-GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # C GPIO 4         pin 17 kanske
+GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # C GPIO 4
 GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # D GPIO 27
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # E GPIO 22
 GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F GPIO 5
@@ -34,6 +34,9 @@ GPIO.setup(2, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # D# GPIO 2
 GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F# GPIO 3
 GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
 GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
+
+GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # universal knapp
+
 
 # function to redefine index from firebase in main loop later
 
@@ -94,7 +97,7 @@ def type_synth_password():
             print("Sound A#")
             Password += "A#"
             time.sleep(0.25)
-        if universal_button() == 0:     # stop typing password
+        if GPIO.input(17) == 0:     # stop typing password
             return Password
 
 
