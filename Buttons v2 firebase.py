@@ -39,7 +39,6 @@ GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # universal knapp
 
 
 # function to redefine index from firebase in main loop later
-
 macAdress = "dc:a6:32:b4:da:a5"
 
 
