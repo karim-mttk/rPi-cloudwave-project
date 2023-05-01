@@ -2,9 +2,14 @@ import firebase_admin
 from firebase_admin import credentials, storage, db
 
 import pygame
+import numpy as np
+import wave
 
 # initialize Pygame mixer for playing sound files
-pygame.mixer.init()
+# pygame.mixer.init()
+pygame.init()
+pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+
 
 # cred = credentials.Certificate(r"firebasekey.json")
 cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
@@ -85,20 +90,58 @@ def Download_Chords(index):
 
 SoundBoard = Download_Chords(index)
 
+recording = []
+
+channel = pygame.mixer.Channel(0)
+
 # upload the audio file to Firebase Storage
 # blob = bucket.blob(storage_path)
 # blob.upload_from_filename(file_path)
 
 # play all sounds, wait for each sound to finish playing
+start_time = pygame.time.get_ticks()
 while True:
     i = 0
+    print("next")
     for note in Chords:
         if index != Check_index():
             index = Check_index()
             SoundBoard = Download_Chords(index)
         SoundBoard[i].play()
+        recording.append(SoundBoard[i])
         i += 1
         print(Check_index())
         while pygame.mixer.get_busy():
             pass
+    # Stop recording after 30 seconds
+    print(pygame.time.get_ticks() - start_time)
+    if pygame.time.get_ticks() - start_time >= 30000:
+        break
+
+pygame.mixer.stop()
+
+# Combine the recorded audio into a single Pygame Sound object
+recording_array = np.concatenate([pygame.sndarray.array(s) for s in recording])
+recording_sound = pygame.sndarray.make_sound(recording_array)
+
+# convert to wav file
+save = wave.open(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav', 'w')
+
+# set the parameters
+save.setframerate(44100)
+save.setnchannels(2)
+save.setsampwidth(2)
+
+# write raw PyGame sound buffer to wave file
+save.writeframesraw(recording_sound.get_raw())
+
+# close file
+save.close()
+
+# upload to firebase
+upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
+blob = bucket.blob(upload_path)
+blob.upload_from_filename(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav')
+
+print(f"finished uploading new_song.wav")
 
