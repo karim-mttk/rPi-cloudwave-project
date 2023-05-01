@@ -163,7 +163,7 @@ def Download_Chords(index):
 SoundBoard = Download_Chords(chord_index)
 
 # function for saving and uploading recorded music. may have problems with interpreting "empty space"
-# and multiple at same time
+# and multiple button presses at the same time
 
 def record_music(song):
     # Combine the recorded audio into a single Pygame Sound object
