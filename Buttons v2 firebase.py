@@ -2,12 +2,15 @@
 import RPi.GPIO as GPIO
 import time
 import pygame
+import numpy as np
+import wave
 
 import firebase_admin
 from firebase_admin import credentials, storage, db
 
 # pygame setup
-pygame.mixer.init()
+pygame.init()
+pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
 
 # firebase setup
 cred = credentials.Certificate(r"firebasekey.json")
@@ -158,6 +161,38 @@ def Download_Chords(index):
 
 
 SoundBoard = Download_Chords(chord_index)
+
+# function for saving and uploading recorded music
+
+def record_music(song):
+    # Combine the recorded audio into a single Pygame Sound object
+    recording_array = np.concatenate([pygame.sndarray.array(s) for s in song])
+    recording_sound = pygame.sndarray.make_sound(recording_array)
+
+    # convert to wav file
+    save = wave.open(
+        fr'/home/pi/Desktop/programming/cloudwave/sound/new_song.wav', 'w')
+
+    # set the parameters
+    save.setframerate(44100)
+    save.setnchannels(2)
+    save.setsampwidth(2)
+
+    # write raw PyGame sound buffer to wave file
+    save.writeframesraw(recording_sound.get_raw())
+
+    # close file
+    save.close()
+
+    # upload to firebase
+    upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
+    blob = bucket.blob(upload_path)
+    blob.upload_from_filename(
+        fr'/home/pi/Desktop/programming/cloudwave/sound/new_song.wav')
+
+    print(f"finished uploading new_song.wav")
+
+
 
 try:
     while True:
