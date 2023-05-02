@@ -5,6 +5,7 @@ import pygame
 import numpy as np
 import wave
 import pyttsx3
+from eq_test import equalizerSet
 
 import firebase_admin
 from firebase_admin import credentials, storage, db
@@ -142,6 +143,15 @@ current_user = validate_synth_password()
 def Check_index():
     return root.child(f'{macAdress}').child(f'{current_user}').child('index').get()
 
+def Check_bass():
+    return root.child(f'{macAdress}').child(f'{current_user}').child('Bass').get()
+
+def Check_mid():
+    return root.child(f'{macAdress}').child(f'{current_user}').child('Mid').get()
+
+def Check_treble():
+    return root.child(f'{macAdress}').child(f'{current_user}').child('Treble').get()
+
 
 chord_index = Check_index()
 
@@ -205,7 +215,8 @@ def record_music(song):
 
     print(f"finished uploading new_song.wav")
 
-
+# check and update equalizer
+# equalizerSet(Check_bass(), Check_treble(), Check_mid())
 
 try:
     while True:
