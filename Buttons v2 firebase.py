@@ -4,6 +4,7 @@ import time
 import pygame
 import numpy as np
 import wave
+import pyttsx3
 
 import firebase_admin
 from firebase_admin import credentials, storage, db
@@ -44,6 +45,13 @@ GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # universal knapp
 # function to redefine index from firebase in main loop later
 macAdress = "dc:a6:32:b4:da:a5"
 
+
+# read text
+
+def speak(text):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
 
 # add new button, "universal knapp". To end typen password, for example
 
@@ -112,13 +120,17 @@ def validate_synth_password():
             User = Device.child(f'{CurrentUser}')
             User_password = User.child('synthPassword').get()
 
+            print("Type password:")
+            speak("Type password")
             Input_password = type_synth_password()
             if Input_password == User_password:
                 break
             else:
                 print("Wrong password")
+                speak("Wrong password")
         except:
             print("Exception, user not found")
+            speak("Exception, user not found")
     return CurrentUser
 
 
@@ -197,9 +209,10 @@ def record_music(song):
 
 try:
     while True:
-        #sudo
-        #if recording == 1:
-        #
+        # sudo
+        # if recording == 1:
+        # speak("Recording in progress")
+        #speak("Recording stoped")
 
         # change soundboard if index differ
         if chord_index != Check_index():

@@ -4,6 +4,7 @@ from firebase_admin import credentials, storage, db
 import pygame
 import numpy as np
 import wave
+import pyttsx3
 
 # initialize Pygame mixer for playing sound files
 # pygame.mixer.init()
@@ -27,6 +28,11 @@ macAdress = "dc:a6:32:b4:da:a5"
 # Add a child node to a child node
 # child_node_ref = parent_node_ref.child('user1').push()
 
+def speak(text):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
+
 
 def validate_synth_password():
     while True:
@@ -38,18 +44,21 @@ def validate_synth_password():
             User_password = User.child('synthPassword').get()
 
             print("Type password:")
+            speak("Type password")
             Input_password = input()
             if Input_password == User_password:
                 break
             else:
                 print("Wrong password")
+                speak("Wrong password")
         except:
             print("Exception, user not found")
+            speak("Exception, user not found")
     return CurrentUser
 
 
 current_user = validate_synth_password()
-
+print("User Authenticated")
 # download index number
 
 
@@ -67,6 +76,10 @@ Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
 
 # download all chords and put in local storage
 
+Song = [{"note": "D"}, {"note": "D"}, {"note": "D"}, {"note": "A"}, {"note": "G#"}, {"note": "G"}, {"note": "F"},
+        {"note": "D"}, {"note": "F"}, {"note": "G"}, {"note": "C"}, {"note": "C"}]
+
+Song2 = [1, 1, 1, 5, 10, 4, 3, 1, 3, 4, 0, 0]
 
 def Download_Chords(index):
     FXBoard = []
@@ -98,30 +111,37 @@ channel = pygame.mixer.Channel(0)
 # blob = bucket.blob(storage_path)
 # blob.upload_from_filename(file_path)
 
+recording2 = pygame.mixer.Sound(buffer=bytearray())
+# recording2.set_length(30)  # set the length of the recording to 5 seconds
+recording2.play()
+
 # play all sounds, wait for each sound to finish playing
 start_time = pygame.time.get_ticks()
 while True:
     i = 0
     print("next")
-    for note in Chords:
+    for note in Song:
         if index != Check_index():
             index = Check_index()
             SoundBoard = Download_Chords(index)
-        SoundBoard[i].play()
-        recording.append(SoundBoard[i])
+        SoundBoard[Song2[i]].play()
+        recording.append(SoundBoard[Song2[i]])
         i += 1
         print(Check_index())
-        while pygame.mixer.get_busy():
-            pass
+        # while pygame.mixer.get_busy():
+        #     pass
     # Stop recording after 30 seconds
     print(pygame.time.get_ticks() - start_time)
-    if pygame.time.get_ticks() - start_time >= 30000:
+    if pygame.time.get_ticks() - start_time >= 10000:
         break
 
-pygame.mixer.stop()
+recording2.stop()
+# pygame.mixer.stop()
 
 # Combine the recorded audio into a single Pygame Sound object
-recording_array = np.concatenate([pygame.sndarray.array(s) for s in recording])
+# recording_array = np.concatenate([pygame.sndarray.array(s) for s in recording])
+# recording_sound = pygame.sndarray.make_sound(recording_array)
+recording_array = pygame.sndarray.array(recording2)
 recording_sound = pygame.sndarray.make_sound(recording_array)
 
 # convert to wav file
@@ -139,9 +159,9 @@ save.writeframesraw(recording_sound.get_raw())
 save.close()
 
 # upload to firebase
-upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
-blob = bucket.blob(upload_path)
-blob.upload_from_filename(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav')
+# upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
+# blob = bucket.blob(upload_path)
+# blob.upload_from_filename(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav')
 
-print(f"finished uploading new_song.wav")
+# print(f"finished uploading new_song.wav")
 
