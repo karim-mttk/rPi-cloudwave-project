@@ -3,9 +3,16 @@ from firebase_admin import credentials, storage, db
 
 import pygame
 import numpy as np
-import wave
+import soundcard as sc
 import pyttsx3
-from eq_test import equalizerSet
+from scipy.io.wavfile import write
+# from eq_test import equalizerSet
+
+import sounddevice as sd
+#check audio devices
+# print(sd.query_devices())
+
+
 
 # initialize Pygame mixer for playing sound files
 # pygame.mixer.init()
@@ -82,7 +89,7 @@ Song = [{"note": "D"}, {"note": "D"}, {"note": "D"}, {"note": "A"}, {"note": "G#
 
 Song2 = [1, 1, 1, 5, 10, 4, 3, 1, 3, 4, 0, 0]
 
-equalizerSet()
+# equalizerSet()
 
 def Download_Chords(index):
     FXBoard = []
@@ -108,18 +115,24 @@ SoundBoard = Download_Chords(index)
 
 recording = []
 
-channel = pygame.mixer.Channel(0)
+# get a list of all speakers:
+speakers = sc.all_speakers()
+# get the current default speaker on your system:
+default_speaker = sc.default_speaker()
 
-# upload the audio file to Firebase Storage
-# blob = bucket.blob(storage_path)
-# blob.upload_from_filename(file_path)
-
-recording2 = pygame.mixer.Sound(buffer=bytearray())
-# recording2.set_length(30)  # set the length of the recording to 5 seconds
-recording2.play()
+# get a list of all microphones:v
+mics = sc.all_microphones(include_loopback=True)
+# get the current default microphone on your system:
+default_mic = mics[1]
 
 # play all sounds, wait for each sound to finish playing
 start_time = pygame.time.get_ticks()
+
+with default_mic.recorder(samplerate=44100) as mic, \
+            default_speaker.player(samplerate=44100) as sp:
+    frames = []
+    num_frames = 44100 * 0.5 # record for 5 seconds
+    data = 0
 while True:
     i = 0
     print("next")
@@ -128,43 +141,33 @@ while True:
             index = Check_index()
             SoundBoard = Download_Chords(index)
         SoundBoard[Song2[i]].play()
-        recording.append(SoundBoard[Song2[i]])
+
+        # for j in range(0, int(44100 / num_frames * num_frames)):
+        data = default_mic.record(numframes=num_frames, samplerate=44100)
+        frames.append(data)
+
         i += 1
         print(Check_index())
         # while pygame.mixer.get_busy():
         #     pass
     # Stop recording after 30 seconds
     print(pygame.time.get_ticks() - start_time)
-    if pygame.time.get_ticks() - start_time >= 10000:
+    if pygame.time.get_ticks() - start_time >= 5000:
         break
 
-recording2.stop()
-# pygame.mixer.stop()
 
-# Combine the recorded audio into a single Pygame Sound object
-# recording_array = np.concatenate([pygame.sndarray.array(s) for s in recording])
-# recording_sound = pygame.sndarray.make_sound(recording_array)
-recording_array = pygame.sndarray.array(recording2)
-recording_sound = pygame.sndarray.make_sound(recording_array)
+path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav"
+frames = np.concatenate(frames)
+frames /= 1.414
+frames *= 32767
+int16_data = frames.astype(np.int16)
+write(path, 44100, int16_data)
 
-# convert to wav file
-save = wave.open(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav', 'w')
-
-# set the parameters
-save.setframerate(44100)
-save.setnchannels(2)
-save.setsampwidth(2)
-
-# write raw PyGame sound buffer to wave file
-save.writeframesraw(recording_sound.get_raw())
-
-# close file
-save.close()
 
 # upload to firebase
-# upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
-# blob = bucket.blob(upload_path)
-# blob.upload_from_filename(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav')
+upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
+blob = bucket.blob(upload_path)
+blob.upload_from_filename(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav')
 
-# print(f"finished uploading new_song.wav")
+print(f"finished uploading new_song.wav")
 
