@@ -5,6 +5,7 @@ import pygame
 import numpy as np
 import wave
 import pyttsx3
+from eq_test import equalizerSet
 
 # initialize Pygame mixer for playing sound files
 # pygame.mixer.init()
@@ -80,6 +81,8 @@ Song = [{"note": "D"}, {"note": "D"}, {"note": "D"}, {"note": "A"}, {"note": "G#
         {"note": "D"}, {"note": "F"}, {"note": "G"}, {"note": "C"}, {"note": "C"}]
 
 Song2 = [1, 1, 1, 5, 10, 4, 3, 1, 3, 4, 0, 0]
+
+equalizerSet()
 
 def Download_Chords(index):
     FXBoard = []
