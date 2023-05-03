@@ -13,7 +13,7 @@ from firebase_admin import credentials, storage, db
 
 # pygame setup
 pygame.init()
-pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+pygame.mixer.init(frequency=44100, size=16, channels=2, buffer=4096)
 
 # firebase setup
 cred = credentials.Certificate(r"firebasekey.json")
@@ -42,6 +42,7 @@ GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
 GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
 GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # universal knapp
+GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # potentiometer
 
 
 # function to redefine index from firebase in main loop later
@@ -118,7 +119,7 @@ def validate_synth_password():
         try:
             # find device, find current user, and find current user password
             Device = root.child(f'{macAdress}')
-            CurrentUser = Device.child('Current User').get()
+            CurrentUser = Device.child('CurrentUser').child('User').get()
             User = Device.child(f'{CurrentUser}')
             User_password = User.child('synthPassword').get()
 
@@ -188,12 +189,6 @@ SoundBoard = Download_Chords(chord_index)
 # init recording
 #
 
-# get a list of all speakers:
-speakers = sc.all_speakers()
-
-# get the current default speaker on your system:
-default_speaker = sc.default_speaker()
-
 # get a list of all microphones:v
 mics = sc.all_microphones(include_loopback=True)
 
@@ -205,8 +200,7 @@ start_time = pygame.time.get_ticks()
 
 is_recording = False
 
-with default_mic.recorder(samplerate=44100) as mic, \
-        default_speaker.player(samplerate=44100) as sp:
+with default_mic.recorder(samplerate=44100) as mic:
     frames = []
     num_frames = 44100 * 0.5  # record for 5 seconds
     data = 0
