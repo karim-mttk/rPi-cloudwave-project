@@ -3,24 +3,35 @@ from firebase_admin import credentials, storage, db
 
 import pygame
 import numpy as np
-import soundcard as sc
+# import soundcard as sc
 import pyttsx3
 from scipy.io.wavfile import write
+import alsaaudio
+
+import pyaudio
+import wave
+
+# Define audio settings
+FORMAT = pyaudio.paInt16
+CHANNELS = 2
+RATE = 44100
+CHUNK = 1024
+
+# Open the soundcard device for recording
+input_device = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NONBLOCK)
+
+
 # from eq_test import equalizerSet
-
-#check audio devices
-# print(sd.query_devices())
-
 
 
 # initialize Pygame mixer for playing sound files
-# pygame.mixer.init()
 pygame.init()
-pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+pygame.mixer.init(frequency=44100, size=16, channels=2, buffer=4096)
 
 
 # cred = credentials.Certificate(r"firebasekey.json")
-cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
+#cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
+cred = credentials.Certificate(r"firebasekey.json")
 firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.com', 'databaseURL': 'https://cloudwave-test-default-rtdb.europe-west1.firebasedatabase.app'})
 
 # create a Firebase Storage client
@@ -81,15 +92,8 @@ Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
           {"note": "G"}, {"note": "A"}, {"note": "B"}, {"note": "C#"},
           {"note": "D#"}, {"note": "F#"}, {"note": "G#"}, {"note": "A#"}]
 
-# download all chords and put in local storage
-
-Song = [{"note": "D"}, {"note": "D"}, {"note": "D"}, {"note": "A"}, {"note": "G#"}, {"note": "G"}, {"note": "F"},
-        {"note": "D"}, {"note": "F"}, {"note": "G"}, {"note": "C"}, {"note": "C"}]
-
 # Song2 = [1, 1, 1, 5, 10, 4, 3, 1, 3, 4, 0, 0]
 Song2 = [3, 3, 10, 11, 11, 10, 3, 3, 10, 11, 11, 10, 3, 8, 3, 11, 10, 3, 8, 3]
-
-
 
 # equalizerSet()
 
@@ -103,7 +107,8 @@ def Download_Chords(index):
 
         # download the sound file to a temporary file
         # change to RPi storage path later
-        temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\{note['note']}.wav"
+        # temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\{note['note']}.wav"
+        temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
         blob = bucket.blob(storage_path)
         blob.download_to_filename(temp_file)
 
@@ -115,27 +120,36 @@ def Download_Chords(index):
 
 SoundBoard = Download_Chords(index)
 
-recording = []
+# Open audio stream
+# audio = pyaudio.PyAudio()
+# stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
 
-# get a list of all speakers:
-speakers = sc.all_speakers()
-# get the current default speaker on your system:
-default_speaker = sc.default_speaker()
+# Set up file to save audio recording
+path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+
+print(fr"{path}\audio.wav")
+
+# Set the parameters for recording
+input_device.setchannels(CHANNELS)
+input_device.setrate(RATE)
+input_device.setformat(alsaaudio.PCM_FORMAT_S16_LE)
+input_device.setperiodsize(CHUNK)
 
 # get a list of all microphones:v
-mics = sc.all_microphones(include_loopback=True)
+# mics = sc.all_microphones(include_loopback=True)
+
 # get the current default microphone on your system:
-default_mic = mics[1]
+# default_mic = mics[1]
 
 # play all sounds, wait for each sound to finish playing
 start_time = pygame.time.get_ticks()
 
-with default_mic.recorder(samplerate=44100) as mic, \
-            default_speaker.player(samplerate=44100) as sp:
-    frames = []
-    num_frames = 44100 * 0.5 # record for 5 seconds
-    # num_frames = 44100 * 0.1  # record for 5 seconds
-    data = 0
+# with default_mic.recorder(samplerate=44100) as mic:
+    # frames = []
+    # num_frames = 44100 * 0.5    # record for 5 seconds
+frames = []
+data = 0
+RECORD_SECONDS = 10
 speak("Recording in progress")
 while True:
     i = 0
@@ -144,29 +158,46 @@ while True:
         if index != Check_index():
             index = Check_index()
             SoundBoard = Download_Chords(index)
-        SoundBoard[Song2[i]].play()
 
-        # for j in range(0, int(44100 / num_frames * num_frames)):
-        data = default_mic.record(numframes=num_frames, samplerate=44100)
-        frames.append(data)
+
+        # data = default_mic.record(numframes=num_frames, samplerate=44100)
+        # frames.append(data)
+        # for j in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+            l, data = input_device.read()
+            if l:
+                frames.append(data)
+            SoundBoard[Song2[i]].play()
+            i += 1
+
         # SoundBoard[Song2[i]].play()
+        # i += 1
 
-        i += 1
+
         print(Check_index())
-        # while pygame.mixer.get_busy():
-        #     pass
     # Stop recording after 30 seconds
     print(pygame.time.get_ticks() - start_time)
     if pygame.time.get_ticks() - start_time >= 5000:
         break
 speak("Recording stopped")
 
-path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav"
-frames = np.concatenate(frames)
-frames /= 1.414
-frames *= 32767
-int16_data = frames.astype(np.int16)
-write(path, 44100, int16_data)
+# Save the recorded audio in a WAV file
+
+#path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+path = fr'/home/pi/Desktop/programming/cloudwave/sound/'
+
+wf = wave.open(fr'{path}\new_song.wav', 'wb')
+wf.setnchannels(CHANNELS)
+wf.setsampwidth(2)
+wf.setframerate(RATE)
+wf.writeframes(b''.join(frames))
+wf.close()
+
+# frames = np.concatenate(frames)
+# frames /= 1.414
+# frames *= 32767
+# int16_data = frames.astype(np.int16)
+# write(path, 44100, int16_data)
 
 
 # upload to firebase
