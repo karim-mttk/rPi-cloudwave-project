@@ -6,6 +6,7 @@ import numpy as np
 # import soundcard as sc
 import pyttsx3
 from scipy.io.wavfile import write
+# from eq_test import equalizerSet
 import alsaaudio
 
 import pyaudio
@@ -18,10 +19,12 @@ RATE = 44100
 CHUNK = 1024
 
 # Open the soundcard device for recording
-input_device = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NONBLOCK)
+print("playback")
+print(alsaaudio.pcms(pcmtype=PCM_PLAYBACK))
+print("capture")
+print(alsaaudio.pcms(pcmtype=PCM_CAPTURE))
 
-
-# from eq_test import equalizerSet
+input_device = alsaaudio.PCM(type=PCM_CAPTURE, mode=PCM_NONBLOCK)
 
 
 # initialize Pygame mixer for playing sound files
@@ -69,7 +72,7 @@ def validate_synth_password():
             else:
                 print("Wrong password")
                 # speak("Wrong password")
-        except:
+        except Exception:
             print("Exception, user not found")
             speak("Exception, user not found")
     return CurrentUser
@@ -129,11 +132,7 @@ SoundBoard = Download_Chords(index)
 
 # print(fr"{path}\audio.wav")
 
-# Set the parameters for recording
-input_device.setchannels(CHANNELS)
-input_device.setrate(RATE)
-input_device.setformat(alsaaudio.PCM_FORMAT_S16_LE)
-input_device.setperiodsize(CHUNK)
+
 
 # get a list of all microphones:v
 # mics = sc.all_microphones(include_loopback=True)
@@ -177,7 +176,7 @@ while True:
     if pygame.time.get_ticks() - start_time >= 5000:
         break
 # speak("Recording stopped")
-
+input_device.close()
 # Save the recorded audio in a WAV file
 
 #path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
