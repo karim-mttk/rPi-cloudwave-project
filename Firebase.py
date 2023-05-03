@@ -62,13 +62,13 @@ def validate_synth_password():
             User_password = User.child('synthPassword').get()
 
             print("Type password:")
-            speak("Type password")
+            # speak("Type password")
             Input_password = input()
             if Input_password == User_password:
                 break
             else:
                 print("Wrong password")
-                speak("Wrong password")
+                # speak("Wrong password")
         except:
             print("Exception, user not found")
             speak("Exception, user not found")
@@ -125,9 +125,9 @@ SoundBoard = Download_Chords(index)
 # stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
 
 # Set up file to save audio recording
-path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+# path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
 
-print(fr"{path}\audio.wav")
+# print(fr"{path}\audio.wav")
 
 # Set the parameters for recording
 input_device.setchannels(CHANNELS)
@@ -141,9 +141,6 @@ input_device.setperiodsize(CHUNK)
 # get the current default microphone on your system:
 # default_mic = mics[1]
 
-# play all sounds, wait for each sound to finish playing
-start_time = pygame.time.get_ticks()
-
 # with default_mic.recorder(samplerate=44100) as mic:
     # frames = []
     # num_frames = 44100 * 0.5    # record for 5 seconds
@@ -151,6 +148,8 @@ frames = []
 data = 0
 RECORD_SECONDS = 10
 speak("Recording in progress")
+start_time = pygame.time.get_ticks()
+
 while True:
     i = 0
     print("next")
@@ -158,7 +157,6 @@ while True:
         if index != Check_index():
             index = Check_index()
             SoundBoard = Download_Chords(index)
-
 
         # data = default_mic.record(numframes=num_frames, samplerate=44100)
         # frames.append(data)
@@ -173,13 +171,12 @@ while True:
         # SoundBoard[Song2[i]].play()
         # i += 1
 
-
         print(Check_index())
     # Stop recording after 30 seconds
     print(pygame.time.get_ticks() - start_time)
     if pygame.time.get_ticks() - start_time >= 5000:
         break
-speak("Recording stopped")
+# speak("Recording stopped")
 
 # Save the recorded audio in a WAV file
 
