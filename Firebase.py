@@ -1,5 +1,5 @@
 import firebase_admin
-from firebase_admin import credentials, storage, db
+from firebase_admin import credentials, storage, db, auth
 
 import pygame
 import numpy as np
@@ -7,10 +7,7 @@ import numpy as np
 import pyttsx3
 from scipy.io.wavfile import write
 # from eq_test import equalizerSet
-import alsaaudio
-from alsaaudio import PCM_PLAYBACK
-from alsaaudio import PCM_CAPTURE
-from alsaaudio import PCM_NONBLOCK
+# import alsaaudio
 
 import pyaudio
 import wave
@@ -22,13 +19,10 @@ RATE = 44100
 CHUNK = 1024
 
 # Open the soundcard device for recording
-print("playback type")
-print(alsaaudio.pcms(pcmtype=PCM_PLAYBACK))
-print("capture type")
-print(alsaaudio.pcms(pcmtype=PCM_CAPTURE))
+# input_device = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NONBLOCK)
 
-input_device = alsaaudio.PCM(type=PCM_CAPTURE, mode=PCM_NONBLOCK, device='jack')
-
+# Print the user's email address
+# print(user.email)
 
 # initialize Pygame mixer for playing sound files
 pygame.init()
@@ -36,16 +30,14 @@ pygame.mixer.init(frequency=44100, size=16, channels=2, buffer=4096)
 
 
 # cred = credentials.Certificate(r"firebasekey.json")
-#cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
-cred = credentials.Certificate(r"firebasekey.json")
+cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
+# cred = credentials.Certificate(r"firebasekey.json")
 firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.com', 'databaseURL': 'https://cloudwave-test-default-rtdb.europe-west1.firebasedatabase.app'})
 
 # create a Firebase Storage client
 bucket = storage.bucket()
 root = db.reference("/")
 macAdress = "dc:a6:32:b4:da:a5"
-
-# validate user id
 
 # parent_node_ref = db.reference(f'/{macAdress}')
 
@@ -75,7 +67,7 @@ def validate_synth_password():
             else:
                 print("Wrong password")
                 # speak("Wrong password")
-        except Exception:
+        except:
             print("Exception, user not found")
             speak("Exception, user not found")
     return CurrentUser
@@ -113,8 +105,8 @@ def Download_Chords(index):
 
         # download the sound file to a temporary file
         # change to RPi storage path later
-        # temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\{note['note']}.wav"
-        temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
+        temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\{note['note']}.wav"
+        # temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
         blob = bucket.blob(storage_path)
         blob.download_to_filename(temp_file)
 
@@ -126,16 +118,51 @@ def Download_Chords(index):
 
 SoundBoard = Download_Chords(index)
 
+# Initialize PyAudio
+p = pyaudio.PyAudio()
+
+# Get the index of the Stereo Mix input device (assuming it's available on your computer)
+# input_device_index = None
+# info = p.get_host_api_info_by_index(0)
+# num_devices = info.get('deviceCount')
+# for i in range(num_devices):
+#     if "stereo mix" in p.get_device_info_by_host_api_device_index(0, i).get('name').lower():
+#         input_device_index = i
+
+# If the Stereo Mix input device is not available, print an error message and exit
+# if input_device_index is None:
+#     print("Stereo Mix input device not found")
+#     exit()
+# Get the index of the onboard audio input device
+input_device_index = None
+info = p.get_host_api_info_by_index(0)
+num_devices = info.get('deviceCount')
+for i in range(num_devices):
+    if "bcm2835" in p.get_device_info_by_host_api_device_index(0, i).get('name').lower():
+        input_device_index = i
+
+# If the onboard audio input device is not available, print an error message and exit
+if input_device_index is None:
+    print("Onboard audio input device not found")
+    exit()
+
+# Open a stream with the Stereo Mix input device
+stream = p.open(format=FORMAT,
+                channels=CHANNELS,
+                rate=RATE,
+                input=True,
+                input_device_index=input_device_index,
+                frames_per_buffer=CHUNK)
+
+
 # Open audio stream
 # audio = pyaudio.PyAudio()
-# stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+# stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK,input_device_index=5)
 
 # Set up file to save audio recording
-# path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
 
 # print(fr"{path}\audio.wav")
-
-
 
 # get a list of all microphones:v
 # mics = sc.all_microphones(include_loopback=True)
@@ -163,13 +190,17 @@ while True:
         # data = default_mic.record(numframes=num_frames, samplerate=44100)
         # frames.append(data)
         # for j in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-            l, data = input_device.read()
-            if l:
-                frames.append(data)
-            SoundBoard[Song2[i]].play()
-            i += 1
-
+        for j in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+            #l, data = input_device.read()
+            #if l:
+            data = stream.read(44100)
+            frames.append(data)
+            if i < len(Song2):
+                SoundBoard[Song2[i]].play()
+                i += 1
+            else:
+                break
+        break
         # SoundBoard[Song2[i]].play()
         # i += 1
 
@@ -179,11 +210,11 @@ while True:
     if pygame.time.get_ticks() - start_time >= 5000:
         break
 # speak("Recording stopped")
-input_device.close()
+
 # Save the recorded audio in a WAV file
 
-#path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
-path = fr'/home/pi/Desktop/programming/cloudwave/sound/'
+path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+# path = fr'/home/pi/Desktop/programming/cloudwave/sound/'
 
 wf = wave.open(fr'{path}\new_song.wav', 'wb')
 wf.setnchannels(CHANNELS)
