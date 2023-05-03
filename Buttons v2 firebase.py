@@ -120,7 +120,7 @@ def validate_synth_password():
             # find device, find current user, and find current user password
             Device = root.child(f'{macAdress}')
             CurrentUser = Device.child('CurrentUser').child('User').get()
-            User = Device.child(f'{CurrentUser}')
+            User = Device.child('users').child(f'{CurrentUser}')
             User_password = User.child('synthPassword').get()
 
             print("Type password:")
