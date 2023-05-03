@@ -29,8 +29,8 @@ pygame.init()
 pygame.mixer.init(frequency=44100, size=16, channels=2, buffer=4096)
 
 
-#cred = credentials.Certificate(r"firebasekey.json")
-cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
+cred = credentials.Certificate(r"firebasekey.json")
+# cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
 firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.com', 'databaseURL': 'https://cloudwave-test-default-rtdb.europe-west1.firebasedatabase.app'})
 
 # create a Firebase Storage client
