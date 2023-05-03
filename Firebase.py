@@ -87,7 +87,10 @@ Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
 Song = [{"note": "D"}, {"note": "D"}, {"note": "D"}, {"note": "A"}, {"note": "G#"}, {"note": "G"}, {"note": "F"},
         {"note": "D"}, {"note": "F"}, {"note": "G"}, {"note": "C"}, {"note": "C"}]
 
-Song2 = [1, 1, 1, 5, 10, 4, 3, 1, 3, 4, 0, 0]
+# Song2 = [1, 1, 1, 5, 10, 4, 3, 1, 3, 4, 0, 0]
+Song2 = [3, 3, 10, 11, 11, 10, 3, 3, 10, 11, 11, 10, 3, 8, 3, 11, 10, 3, 8, 3]
+
+
 
 # equalizerSet()
 
@@ -132,11 +135,13 @@ with default_mic.recorder(samplerate=44100) as mic, \
             default_speaker.player(samplerate=44100) as sp:
     frames = []
     num_frames = 44100 * 0.5 # record for 5 seconds
+    # num_frames = 44100 * 0.1  # record for 5 seconds
     data = 0
+speak("Recording in progress")
 while True:
     i = 0
     print("next")
-    for note in Song:
+    for j in Song2:
         if index != Check_index():
             index = Check_index()
             SoundBoard = Download_Chords(index)
@@ -145,6 +150,7 @@ while True:
         # for j in range(0, int(44100 / num_frames * num_frames)):
         data = default_mic.record(numframes=num_frames, samplerate=44100)
         frames.append(data)
+        SoundBoard[Song2[i]].play()
 
         i += 1
         print(Check_index())
@@ -154,20 +160,20 @@ while True:
     print(pygame.time.get_ticks() - start_time)
     if pygame.time.get_ticks() - start_time >= 5000:
         break
-
+speak("Recording stopped")
 
 path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav"
 frames = np.concatenate(frames)
 frames /= 1.414
 frames *= 32767
-int16_data = frames.astype(np.int16)
-write(path, 44100, int16_data)
+uint16_data = frames.astype(np.int16)
+write(path, 44100, uint16_data)
 
 
 # upload to firebase
-upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
-blob = bucket.blob(upload_path)
-blob.upload_from_filename(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav')
+# upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
+# blob = bucket.blob(upload_path)
+# blob.upload_from_filename(fr'C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\new_song.wav')
 
 print(f"finished uploading new_song.wav")
 
