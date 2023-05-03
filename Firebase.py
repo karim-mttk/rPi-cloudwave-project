@@ -19,9 +19,9 @@ RATE = 44100
 CHUNK = 1024
 
 # Open the soundcard device for recording
-print("playback")
+print("playback type")
 print(alsaaudio.pcms(pcmtype=PCM_PLAYBACK))
-print("capture")
+print("capture type")
 print(alsaaudio.pcms(pcmtype=PCM_CAPTURE))
 
 input_device = alsaaudio.PCM(type=PCM_CAPTURE, mode=PCM_NONBLOCK)
