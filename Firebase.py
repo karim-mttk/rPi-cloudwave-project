@@ -29,8 +29,8 @@ pygame.init()
 pygame.mixer.init(frequency=44100, size=16, channels=2, buffer=4096)
 
 
-# cred = credentials.Certificate(r"firebasekey.json")
-cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
+cred = credentials.Certificate(r"firebasekey.json")
+# cred = credentials.Certificate(r"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\firebase key\cloudwave-test-firebase-adminsdk-ejn2w-6a4e295421.json")
 # cred = credentials.Certificate(r"firebasekey.json")
 firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.com', 'databaseURL': 'https://cloudwave-test-default-rtdb.europe-west1.firebasedatabase.app'})
 
@@ -105,8 +105,8 @@ def Download_Chords(index):
 
         # download the sound file to a temporary file
         # change to RPi storage path later
-        temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\{note['note']}.wav"
-        # temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
+        # temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\{note['note']}.wav"
+        temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
         blob = bucket.blob(storage_path)
         blob.download_to_filename(temp_file)
 
@@ -154,16 +154,6 @@ stream = p.open(format=FORMAT,
                 input_device_index=input_device_index,
                 frames_per_buffer=CHUNK)
 
-
-# Open audio stream
-# audio = pyaudio.PyAudio()
-# stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK,input_device_index=5)
-
-# Set up file to save audio recording
-path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
-
-# print(fr"{path}\audio.wav")
-
 # get a list of all microphones:v
 # mics = sc.all_microphones(include_loopback=True)
 
@@ -176,45 +166,34 @@ path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektme
 frames = []
 data = 0
 RECORD_SECONDS = 10
-speak("Recording in progress")
+# speak("Recording in progress")
 start_time = pygame.time.get_ticks()
 
+i = 0
+print("next")
 while True:
-    i = 0
-    print("next")
-    for j in Song2:
-        if index != Check_index():
-            index = Check_index()
-            SoundBoard = Download_Chords(index)
+    if index != Check_index():
+        index = Check_index()
+        SoundBoard = Download_Chords(index)
 
-        # data = default_mic.record(numframes=num_frames, samplerate=44100)
-        # frames.append(data)
-        # for j in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        for j in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-            #l, data = input_device.read()
-            #if l:
-            data = stream.read(44100)
-            frames.append(data)
-            if i < len(Song2):
-                SoundBoard[Song2[i]].play()
-                i += 1
-            else:
-                break
-        break
-        # SoundBoard[Song2[i]].play()
-        # i += 1
-
-        print(Check_index())
-    # Stop recording after 30 seconds
-    print(pygame.time.get_ticks() - start_time)
-    if pygame.time.get_ticks() - start_time >= 5000:
-        break
+    # data = default_mic.record(numframes=num_frames, samplerate=44100)
+    # frames.append(data)
+    for j in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        data = stream.read(44100)
+        frames.append(data)
+        if i < len(Song2):
+            SoundBoard[Song2[i]].play()
+            print(Check_index())
+            i += 1
+        else:
+            break
+    break
 # speak("Recording stopped")
 
 # Save the recorded audio in a WAV file
 
-path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
-# path = fr'/home/pi/Desktop/programming/cloudwave/sound/'
+# path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+path = fr'/home/pi/Desktop/programming/cloudwave/sound/'
 
 wf = wave.open(fr'{path}\new_song.wav', 'wb')
 wf.setnchannels(CHANNELS)
