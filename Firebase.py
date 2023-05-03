@@ -8,7 +8,6 @@ import pyttsx3
 from scipy.io.wavfile import write
 # from eq_test import equalizerSet
 
-import sounddevice as sd
 #check audio devices
 # print(sd.query_devices())
 
@@ -150,7 +149,7 @@ while True:
         # for j in range(0, int(44100 / num_frames * num_frames)):
         data = default_mic.record(numframes=num_frames, samplerate=44100)
         frames.append(data)
-        SoundBoard[Song2[i]].play()
+        # SoundBoard[Song2[i]].play()
 
         i += 1
         print(Check_index())
@@ -166,8 +165,8 @@ path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektme
 frames = np.concatenate(frames)
 frames /= 1.414
 frames *= 32767
-uint16_data = frames.astype(np.int16)
-write(path, 44100, uint16_data)
+int16_data = frames.astype(np.int16)
+write(path, 44100, int16_data)
 
 
 # upload to firebase

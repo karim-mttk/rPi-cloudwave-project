@@ -3,7 +3,8 @@ import RPi.GPIO as GPIO
 import time
 import pygame
 import numpy as np
-import wave
+import soundcard as sc
+from scipy.io.wavfile import write
 import pyttsx3
 from eq_test import equalizerSet
 
@@ -184,46 +185,65 @@ def Download_Chords(index):
 
 SoundBoard = Download_Chords(chord_index)
 
-# function for saving and uploading recorded music. may have problems with interpreting "empty space"
-# and multiple button presses at the same time
+# init recording
+#
 
-def record_music(song):
-    # Combine the recorded audio into a single Pygame Sound object
-    recording_array = np.concatenate([pygame.sndarray.array(s) for s in song])
-    recording_sound = pygame.sndarray.make_sound(recording_array)
+# get a list of all speakers:
+speakers = sc.all_speakers()
 
-    # convert to wav file
-    save = wave.open(
-        fr'/home/pi/Desktop/programming/cloudwave/sound/new_song.wav', 'w')
+# get the current default speaker on your system:
+default_speaker = sc.default_speaker()
 
-    # set the parameters
-    save.setframerate(44100)
-    save.setnchannels(2)
-    save.setsampwidth(2)
+# get a list of all microphones:v
+mics = sc.all_microphones(include_loopback=True)
 
-    # write raw PyGame sound buffer to wave file
-    save.writeframesraw(recording_sound.get_raw())
+# get the current default microphone on your system:
+default_mic = mics[1]
 
-    # close file
-    save.close()
+# play all sounds, wait for each sound to finish playing
+start_time = pygame.time.get_ticks()
+
+is_recording = False
+
+with default_mic.recorder(samplerate=44100) as mic, \
+        default_speaker.player(samplerate=44100) as sp:
+    frames = []
+    num_frames = 44100 * 0.5  # record for 5 seconds
+    data = 0
+
+
+def save_and_upload(song):
+    path = fr'/home/pi/Desktop/programming/cloudwave/sound/new_song.wav'
+    frames = np.concatenate(song)
+    frames /= 1.414
+    frames *= 32767
+    uint16_data = frames.astype(np.int16)
+    write(path, 44100, uint16_data)
 
     # upload to firebase
-    upload_path = rf"{current_user}/Saved_Music/new_song.wav.wav"
+    upload_path = rf"{current_user}/Saved_Music/new_song.wav"
     blob = bucket.blob(upload_path)
-    blob.upload_from_filename(
-        fr'/home/pi/Desktop/programming/cloudwave/sound/new_song.wav')
+    blob.upload_from_filename(path)
 
     print(f"finished uploading new_song.wav")
+
 
 # check and update equalizer
 # equalizerSet(Check_bass(), Check_treble(), Check_mid())
 
 try:
     while True:
-        # sudo
-        # if recording == 1:
-        # speak("Recording in progress")
-        #speak("Recording stoped")
+        # recording music and uploading
+        if GPIO.input(17) == 0 and is_recording is False:
+            speak("Recording in progress")
+            is_recording = True
+        elif GPIO.input(17) == 0 and is_recording is True:
+            save_and_upload(frames)
+            speak("Recording stopped")
+            is_recording = False
+        if is_recording is True:
+            data = default_mic.record(numframes=num_frames, samplerate=44100)
+            frames.append(data)
 
         # change soundboard if index differ
         if chord_index != Check_index():
