@@ -8,6 +8,9 @@ import pyttsx3
 from scipy.io.wavfile import write
 # from eq_test import equalizerSet
 import alsaaudio
+from alsaaudio import PCM_PLAYBACK
+from alsaaudio import PCM_CAPTURE
+from alsaaudio import PCM_NONBLOCK
 
 import pyaudio
 import wave
@@ -24,7 +27,7 @@ print(alsaaudio.pcms(pcmtype=PCM_PLAYBACK))
 print("capture type")
 print(alsaaudio.pcms(pcmtype=PCM_CAPTURE))
 
-input_device = alsaaudio.PCM(type=PCM_CAPTURE, mode=PCM_NONBLOCK)
+input_device = alsaaudio.PCM(type=PCM_CAPTURE, mode=PCM_NONBLOCK, device='jack')
 
 
 # initialize Pygame mixer for playing sound files
