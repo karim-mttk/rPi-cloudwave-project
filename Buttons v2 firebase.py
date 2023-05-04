@@ -3,7 +3,6 @@ import RPi.GPIO as GPIO
 import time
 import pygame
 import numpy as np
-import soundcard as sc
 from scipy.io.wavfile import write
 import pyttsx3
 from eq_test import equalizerSet
@@ -140,6 +139,11 @@ def validate_synth_password():
 
 current_user = validate_synth_password()
 
+name = root.child(f'{macAdress}').child('users').child(f'{current_user}').child('name').get()
+print(f"Welcome in, {name}")
+speak(f"Welcome in, {name}")
+
+
 # download index number
 
 
@@ -196,7 +200,7 @@ try:
         # recording music and uploading
         if GPIO.input(17) == 0 and is_recording is False:
             speak("Recording in progress")
-            record()
+            # record()
             is_recording = True
         elif GPIO.input(17) == 0 and is_recording is True:
             speak("Recording stopped")
