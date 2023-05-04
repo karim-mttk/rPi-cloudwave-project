@@ -6,6 +6,7 @@
 #define SAMPLE_RATE 44100
 #define CHANNELS 2
 #define BUFFER_SIZE 4096
+#define RECORDING_TIME 30 // in seconds
 
 int main(int argc, char **argv)
 {
@@ -15,6 +16,7 @@ int main(int argc, char **argv)
     snd_pcm_uframes_t frames;
     char *buffer;
     int size;
+    int counter = 0;
 
     // Open PCM device
     err = snd_pcm_open(&handle, PCM_DEVICE, SND_PCM_STREAM_CAPTURE, 0);
@@ -69,13 +71,14 @@ int main(int argc, char **argv)
     buffer = (char *) malloc(size);
 
     // Start capturing audio
-    while (1) {
+    while (counter < RECORDING_TIME * SAMPLE_RATE) {
         err = snd_pcm_readi(handle, buffer, frames);
         if (err < 0) {
             printf("Error reading from PCM device: %s\n", snd_strerror(err));
             break;
         }
         fwrite(buffer, 1, size, stdout);
+        counter += frames * CHANNELS;
     }
 
     // Cleanup
