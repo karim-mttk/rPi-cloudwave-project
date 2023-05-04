@@ -21,6 +21,7 @@ firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.co
 
 # create a Firebase Storage client
 bucket = storage.bucket()
+# root = root.child('CloudWave')
 root = db.reference("/")
 
 # GPIO setup
