@@ -1,6 +1,10 @@
+import RPi.GPIO as GPIO
 import alsaaudio
 import wave
-import time
+
+# Set up GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(17, GPIO.IN)
 
 # Set up ALSA mixer
 mixer = alsaaudio.Mixer(control='Headphone', cardindex=2)
@@ -18,19 +22,28 @@ wave_file.setnchannels(CHANNELS)
 wave_file.setsampwidth(2)
 wave_file.setframerate(RATE)
 
-# Start recording
-print('Recording started')
-with alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NONBLOCK, cardindex=2) as capture:
-    capture.setchannels(CHANNELS)
-    capture.setrate(RATE)
-    capture.setformat(FORMAT)
-    capture.setperiodsize(CHUNK_SIZE)
-    start_time = time.time()
-    while time.time() - start_time < 5:
-        l, data = capture.read()
-        if l:
-            wave_file.writeframes(data)
+# Define function to start recording
+def start_recording(channel):
+    print('Recording started')
+    with alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NONBLOCK, cardindex=2) as capture:
+        capture.setchannels(CHANNELS)
+        capture.setrate(RATE)
+        capture.setformat(FORMAT)
+        capture.setperiodsize(CHUNK_SIZE)
+        while GPIO.input(channel):
+            l, data = capture.read()
+            if l:
+                wave_file.writeframes(data)
 
-# Stop recording and close wave file
-print('Recording stopped')
-wave_file.close()
+# Define function to stop recording
+def stop_recording(channel):
+    print('Recording stopped')
+    wave_file.close()
+
+# Add event detection to GPIO
+GPIO.add_event_detect(17, GPIO.RISING, callback=start_recording)
+GPIO.add_event_detect(17, GPIO.FALLING, callback=stop_recording)
+
+# Keep script running
+while True:
+    pass
