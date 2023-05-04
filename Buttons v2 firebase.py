@@ -187,45 +187,10 @@ def Download_Chords(index):
 
 SoundBoard = Download_Chords(chord_index)
 
-# init recording
-#
-
-# get a list of all microphones:v
-mics = sc.all_microphones(include_loopback=True)
-
-# get the current default microphone on your system:
-default_mic = mics[1]
-
-# play all sounds, wait for each sound to finish playing
-start_time = pygame.time.get_ticks()
-
-is_recording = False
-
-with default_mic.recorder(samplerate=44100) as mic:
-    frames = []
-    num_frames = 44100 * 0.5  # record for 5 seconds
-    data = 0
-
-
-def save_and_upload(song):
-    path = fr'/home/pi/Desktop/programming/cloudwave/sound/new_song.wav'
-    frames = np.concatenate(song)
-    frames /= 1.414
-    frames *= 32767
-    uint16_data = frames.astype(np.int16)
-    write(path, 44100, uint16_data)
-
-    # upload to firebase
-    upload_path = rf"{current_user}/Saved_Music/new_song.wav"
-    blob = bucket.blob(upload_path)
-    blob.upload_from_filename(path)
-
-    print(f"finished uploading new_song.wav")
-
-
 # check and update equalizer
 # equalizerSet(Check_bass(), Check_treble(), Check_mid())
 
+is_recording = False
 try:
     while True:
         # recording music and uploading
@@ -234,7 +199,6 @@ try:
             record()
             is_recording = True
         elif GPIO.input(17) == 0 and is_recording is True:
-            save_and_upload(frames)
             speak("Recording stopped")
             is_recording = False
         # if is_recording is True:
