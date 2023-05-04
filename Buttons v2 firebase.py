@@ -143,16 +143,16 @@ current_user = validate_synth_password()
 
 
 def Check_index():
-    return root.child(f'{macAdress}').child(f'{current_user}').child('index').get()
+    return root.child(f'{macAdress}').child('users').child(f'{current_user}').child('index').get()
 
 def Check_bass():
-    return root.child(f'{macAdress}').child(f'{current_user}').child('Bass').get()
+    return root.child(f'{macAdress}').child('users').child(f'{current_user}').child('Bass').get()
 
 def Check_mid():
-    return root.child(f'{macAdress}').child(f'{current_user}').child('Mid').get()
+    return root.child(f'{macAdress}').child('users').child(f'{current_user}').child('Mid').get()
 
 def Check_treble():
-    return root.child(f'{macAdress}').child(f'{current_user}').child('Treble').get()
+    return root.child(f'{macAdress}').child('users').child(f'{current_user}').child('Treble').get()
 
 
 chord_index = Check_index()

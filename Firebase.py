@@ -79,7 +79,7 @@ print("User Authenticated")
 
 
 def Check_index():
-    return root.child(f'{macAdress}').child(f'{current_user}').child('index').get()
+    return root.child(f'{macAdress}').child('users').child(f'{current_user}').child('index').get()
 
 
 index = Check_index()
