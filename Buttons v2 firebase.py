@@ -7,6 +7,7 @@ import soundcard as sc
 from scipy.io.wavfile import write
 import pyttsx3
 from eq_test import equalizerSet
+from python_Scr_C_record import record
 
 import firebase_admin
 from firebase_admin import credentials, storage, db
@@ -230,14 +231,15 @@ try:
         # recording music and uploading
         if GPIO.input(17) == 0 and is_recording is False:
             speak("Recording in progress")
+            record()
             is_recording = True
         elif GPIO.input(17) == 0 and is_recording is True:
             save_and_upload(frames)
             speak("Recording stopped")
             is_recording = False
-        if is_recording is True:
-            data = default_mic.record(numframes=num_frames, samplerate=44100)
-            frames.append(data)
+        # if is_recording is True:
+        #     data = default_mic.record(numframes=num_frames, samplerate=44100)
+        #     frames.append(data)
 
         # change soundboard if index differ
         if chord_index != Check_index():
