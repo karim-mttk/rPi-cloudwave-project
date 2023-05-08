@@ -195,6 +195,14 @@ def Download_Chords(index):
     return FXBoard
 
 
+# uploading song to firebase
+def Upload_file(name):
+    upload_path = rf"{current_user}/Saved_Music/{name}.wav"
+    blob = bucket.blob(upload_path)
+    blob.upload_from_filename(fr'{path}\output.wav')
+    print("Upload successful")
+    speak("Upload successful")
+
 # update without overwriting from firebase
 
 def Update_Chords(index):
@@ -215,8 +223,9 @@ def change_pitch(Sounds, semitones):
         pitched = Update_Chords(chord_index)
     else:
         for note in Chords:
-            path = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
-            with wave.open(fr"{path}\{note['note']}pitched.wav", "wb") as wav_file:
+            # path = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+            path = rf"/home/pi/Desktop/programming/cloudwave/sound"
+            with wave.open(fr"{path}/{note['note']}pitched.wav", "wb") as wav_file:
                 # Set the number of channels and sample width
                 if semitones == -1:      #pitch down
                     wav_file.setnchannels(1)        # 1 or 2
