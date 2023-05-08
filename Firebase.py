@@ -1,14 +1,17 @@
 import firebase_admin
-from firebase_admin import credentials, storage, db, auth
+from firebase_admin import credentials, storage, db
 
 import pygame
 import pyttsx3
+import wave
 from eq_test import equalizerSet
 from python_Scr_C_record import record
-from raw-to-wav-converter import converter
+# from raw_to_wav_converter import converter
 
 import pyaudio
-import wave
+from pydub import AudioSegment
+import librosa
+import numpy as np
 
 # Define audio settings
 FORMAT = pyaudio.paInt16
@@ -28,6 +31,7 @@ firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.co
 # create a Firebase Storage client
 bucket = storage.bucket()
 root = db.reference("/")
+# root = root.child('CloudWave')
 macAdress = "dc:a6:32:b4:da:a5"
 
 # parent_node_ref = db.reference(f'/{macAdress}')
@@ -48,11 +52,12 @@ def validate_synth_password():
             Device = root.child(f'{macAdress}')
             CurrentUser = Device.child('CurrentUser').child('User').get()
             User = Device.child('users').child(f'{CurrentUser}')
-            User_password = User.child('synthPassword').get()
-
+            print(CurrentUser)
+            User_password = User.child('SynthPassword').get()
+            print(User_password)
 
             print("Type password:")
-            # speak("Type password")
+            speak("Type password")
             Input_password = input()
             if Input_password == User_password:
                 break
@@ -66,7 +71,11 @@ def validate_synth_password():
 
 
 current_user = validate_synth_password()
-print("User Authenticated")
+
+name = root.child(f'{macAdress}').child('users').child(f'{current_user}').child('name').get()
+print(f"Welcome in, {name}")
+speak(f"Welcome in, {name}")
+
 # download index number
 
 
@@ -128,15 +137,80 @@ SoundBoard = Download_Chords(index)
 # Get the index of the onboard audio input device
 
 
-def change_pitch(sound, pitch):
-    # do for all 12 notes
-    # pitch up or down, 2 is up, 0,5 is down
-    sound.set_speed(pitch)
 
+
+
+def change_pitch(Sounds, semitones):
+    pitched = []
+    i = 0
+    if semitones == 0:
+        pitched = Update_Chords(index)
+    else:
+        for note in Chords:
+            path = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+            with wave.open(fr"{path}\{note['note']}pitched.wav", "wb") as wav_file:
+                # Set the number of channels and sample width
+                if semitones == -1:      #pitch down
+                    wav_file.setnchannels(1)        # 1 or 2
+                    wav_file.setsampwidth(2)        # 2 or 4
+                elif semitones == 1:    # pitch up
+                    wav_file.setnchannels(2)  # 1 or 2
+                    wav_file.setsampwidth(4)  # 2 or 4
+
+                wav_file.setframerate(44100)  # 44100 or 48000
+                sound_data = Sounds[i].get_raw()
+                wav_file.writeframes(sound_data)
+            pitched.append(pygame.mixer.Sound(fr"{path}\{note['note']}pitched.wav"))
+            i += 1
+    return pitched
+
+def Update_Chords(index):
+    FXBoard = []
+    for note in Chords:
+        temp_file = rf"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp\{note['note']}.wav"
+
+        # load the sound file into Pygame mixer and save it
+        FXBoard.append(pygame.mixer.Sound(temp_file))
+        print(f"finished downloading {note['note']}.wav")
+    return FXBoard
+
+# record music, rudimentary
+recording = []
+
+def record(sound, state):
+    path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+    if state:
+        recording.append(sound)
+    else:
+        # Open the WAV file for writing
+        with wave.open(fr"{path}\output2.wav", "wb") as wav_file:
+            # Set the number of channels and sample width
+            wav_file.setnchannels(2)
+            wav_file.setsampwidth(2)    # 2 or 4
+            wav_file.setframerate(44100)    # 44100 or 48000
+
+            # Write each sound to the WAV file
+            for sound in recording:
+                sound_data = sound.get_raw()
+                wav_file.writeframes(sound_data)
+
+
+
+def Upload_file(name):
+    upload_path = rf"{current_user}/Saved_Music/{name}.wav"
+    blob = bucket.blob(upload_path)
+    blob.upload_from_filename(fr'{path}\output.wav')
+    print("Upload successful")
+    speak("Upload successful")
+
+
+SoundBoard = change_pitch(SoundBoard, 1)
+# SoundBoard = Update_Chords(index)
 
 speak("Recording in progress")
 i = 0
-record()
+
+start_time = pygame.time.get_ticks()
 while True:
     if index != Check_index():
         index = Check_index()
@@ -144,17 +218,23 @@ while True:
 
     for j in Song2:
         SoundBoard[Song2[i]].play()
+        record(SoundBoard[Song2[i]], True)
+        start_time = pygame.time.get_ticks()
+        while pygame.time.get_ticks() - start_time < 500:
+            pass
+
         print(Check_index())
         i += 1
 
     break
-# speak("Recording stopped")
+record(None, False)
+speak("Recording stopped")
 
 # Save the recorded audio in a WAV file
-# path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
-path = fr'/home/pi/Desktop/programming/cloudwave'
+path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+# path = fr'/home/pi/Desktop/programming/cloudwave'
 
-converter()
+# converter()
 
 # upload to firebase
 # upload_path = rf"{current_user}/Saved_Music/new_song.wav"
