@@ -160,8 +160,13 @@ def Check_mid():
 def Check_treble():
     return root.child(f'{macAdress}').child('users').child(f'{current_user}').child('Treble').get()
 
-
+# set index
 chord_index = Check_index()
+
+# set equalizer values
+bass = Check_bass()
+mid = Check_mid()
+treble = Check_treble()
 
 # selecting chords
 Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
@@ -176,7 +181,6 @@ def Download_Chords(index):
     FXBoard = []
     for note in Chords:
         # specify the path to the audio file in Firebase Storage
-        # storage_path = rf"sounds{index}/folder/{note['note']}.wav"
         storage_path = rf"{current_user}/sounds{index}/{note['note']}.wav"
 
         # download the sound file to a temporary file
@@ -190,10 +194,26 @@ def Download_Chords(index):
     return FXBoard
 
 
+# update without overwriting from firebase
+
+def Update_Chords(index):
+    FXBoard = []
+    for note in Chords:
+        temp_file = rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"
+
+        # load the sound file into Pygame mixer and save it
+        FXBoard.append(pygame.mixer.Sound(temp_file))
+        print(f"finished downloading {note['note']}.wav")
+    return FXBoard
+
+# download chords
 SoundBoard = Download_Chords(chord_index)
 
 # check and update equalizer
-# equalizerSet(Check_bass(), Check_treble(), Check_mid())
+# equalizerSet(bass, treble, mid)
+equalizerSet(10, 1, 12)
+
+SoundBoard = Update_Chords(chord_index)
 
 is_recording = False
 try:
@@ -214,6 +234,18 @@ try:
         if chord_index != Check_index():
             chord_index = Check_index()
             SoundBoard = Download_Chords(chord_index)
+
+        # update equalizer
+        if bass != Check_bass():
+            bass = Check_bass()
+            SoundBoard = Update_Chords(chord_index)
+        if treble != Check_treble():
+            treble = Check_treble()
+            SoundBoard = Update_Chords(chord_index)
+        if mid != Check_mid():
+            mid = Check_mid()
+            SoundBoard = Update_Chords(chord_index)
+
 
         # if button pressed, play sound
         if GPIO.input(4) == 0:

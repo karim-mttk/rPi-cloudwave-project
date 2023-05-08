@@ -6,10 +6,11 @@ Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
 
 # Define the gain adjustments in decibels
 
-def equalizerSet():
-    bass = 20
-    mid = 1
-    treble = 1
+
+def equalizerSet(bass, mid, treble):
+    # bass = 20
+    # mid = 1
+    # treble = 1
     for note in Chords:
         # Load the audio file
         sound = AudioSegment.from_file(rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav", format="wav")
