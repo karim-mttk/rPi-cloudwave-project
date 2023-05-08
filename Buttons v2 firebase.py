@@ -248,7 +248,7 @@ SoundBoard = Download_Chords(chord_index)
 SoundBoard = change_pitch(SoundBoard, 0)
 
 # check and update equalizer
-# equalizerSet(bass, treble, mid)
+# SoundBoard = equalizerSet(bass, treble, mid)
 SoundBoard = equalizerSet(10, 1, 12)
 
 
