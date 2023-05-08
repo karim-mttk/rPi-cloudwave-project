@@ -1,4 +1,7 @@
 from pydub import AudioSegment
+import pygame
+
+pygame.mixer.init()
 
 Chords = [{"note": "C"}, {"note": "D"}, {"note": "E"}, {"note": "F"},
           {"note": "G"}, {"note": "A"}, {"note": "B"}, {"note": "C#"},
@@ -11,6 +14,7 @@ def equalizerSet(bass, mid, treble):
     # bass = 20
     # mid = 1
     # treble = 1
+    equalizer = []
     for note in Chords:
         # Load the audio file
         sound = AudioSegment.from_file(rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav", format="wav")
@@ -23,3 +27,5 @@ def equalizerSet(bass, mid, treble):
             
         # Export the adjusted sound
         adjusted_sound.export(rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav", format="wav")
+        equalizer.append(pygame.mixer.Sound(rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"))
+    return equalizer
