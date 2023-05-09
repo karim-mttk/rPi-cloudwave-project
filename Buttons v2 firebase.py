@@ -205,7 +205,7 @@ def Upload_file(name):
     path = rf"/home/pi/Desktop/programming/cloudwave/sound"
     upload_path = rf"{current_user}/Saved_Music/{name}.wav"
     blob = bucket.blob(upload_path)
-    blob.upload_from_filename(fr'{path}\output.wav')
+    blob.upload_from_filename(fr'{path}/output.wav')
     print("Upload successful")
     speak("Upload successful")
 
@@ -218,7 +218,6 @@ def Update_Chords(index):
 
         # load the sound file into Pygame mixer and save it
         FXBoard.append(pygame.mixer.Sound(temp_file))
-        print(f"finished downloading {note['note']}.wav")
     return FXBoard
 
 
@@ -231,7 +230,7 @@ def record(sound, state):
         recording.append(sound)
     else:
         # Open the WAV file for writing
-        with wave.open(fr"{path}\new_song.wav", "wb") as wav_file:
+        with wave.open(fr"{path}/new_song.wav", "wb") as wav_file:
             # Set the number of channels and sample width
             wav_file.setnchannels(2)
             wav_file.setsampwidth(2)        # 2 or 4
@@ -267,7 +266,7 @@ def change_pitch(Sounds, semitones):
                 wav_file.setframerate(44100)  # 44100 or 48000
                 sound_data = Sounds[i].get_raw()
                 wav_file.writeframes(sound_data)
-            pitched.append(pygame.mixer.Sound(fr"{path}\{note['note']}pitched.wav"))
+            pitched.append(pygame.mixer.Sound(fr"{path}/{note['note']}pitched.wav"))
             i += 1
     return pitched
 
@@ -312,7 +311,7 @@ try:
             record(None, False)     # stop recording, save, and upload
             speak("Recording stopped")
             is_recording = False
-        if is_recording is True:
+        if is_recording is True and Song is not None:
             record(Song, True)
             Song = None
 
