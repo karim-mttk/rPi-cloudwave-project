@@ -1,4 +1,5 @@
 import firebase_admin
+import numpy
 from firebase_admin import credentials, storage, db
 
 import pygame
@@ -138,8 +139,6 @@ SoundBoard = Download_Chords(index)
 
 
 
-
-
 def change_pitch(Sounds, semitones):
     pitched = []
     i = 0
@@ -195,16 +194,16 @@ def record(sound, state):
                 wav_file.writeframes(sound_data)
 
 
-
 def Upload_file(name):
-    upload_path = rf"{current_user}/Saved_Music/{name}.wav"
+    path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+    upload_path = rf"{current_user}/Saved_Music/test/{name}.wav"
     blob = bucket.blob(upload_path)
-    blob.upload_from_filename(fr'{path}\output.wav')
+    blob.upload_from_filename(fr'{path}\output2.wav')
     print("Upload successful")
     speak("Upload successful")
 
 
-SoundBoard = change_pitch(SoundBoard, 1)
+SoundBoard = change_pitch(SoundBoard, 0)
 # SoundBoard = Update_Chords(index)
 
 speak("Recording in progress")
@@ -218,6 +217,8 @@ while True:
 
     for j in Song2:
         SoundBoard[Song2[i]].play()
+        SoundBoard[Song2[i]].play()
+        recording.append(SoundBoard[Song2[i]])
         record(SoundBoard[Song2[i]], True)
         start_time = pygame.time.get_ticks()
         while pygame.time.get_ticks() - start_time < 500:
@@ -229,6 +230,8 @@ while True:
     break
 record(None, False)
 speak("Recording stopped")
+
+Upload_file("new song test")
 
 # Save the recorded audio in a WAV file
 path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
@@ -243,3 +246,25 @@ path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektme
 
 print(f"finished uploading new_song.wav")
 
+# multiple chord concept
+with wave.open(fr"{path}\test.wav", "wb") as wav_file:
+    # Set the number of channels and sample width
+    wav_file.setnchannels(2)  # 1 or 2
+    wav_file.setsampwidth(2)  # 2 or 4
+
+    wav_file.setframerate(44100)  # 44100 or 48000
+    sound_data1 = SoundBoard[0].get_raw()
+    sound_data2 = SoundBoard[5].get_raw()
+
+    # Convert bytestrings to integers
+    sound_data1 = int.from_bytes(sound_data1, byteorder='big')
+    sound_data2 = int.from_bytes(sound_data2, byteorder='big')
+
+    # Perform bitwise +  on the integers
+    sound_data = sound_data1 + sound_data2
+
+    # Convert the result back to a bytestring
+    sound_data = sound_data.to_bytes(length=500000, byteorder='big')
+
+    wav_file.writeframes(sound_data)
+# Test = pygame.mixer.Sound(fr"{path}\test.wav")

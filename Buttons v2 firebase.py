@@ -3,11 +3,11 @@ import RPi.GPIO as GPIO
 import time
 import pygame
 import wave
-import numpy as np
-from scipy.io.wavfile import write
+
 import pyttsx3
 from eq_test import equalizerSet
-from python_Scr_C_record import record
+from volume_control import change_volume
+
 
 import firebase_admin
 from firebase_admin import credentials, storage, db
@@ -44,7 +44,12 @@ GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
 GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
 GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # universal knapp
-GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # potentiometer
+
+GPIO.setup(14, GPIO.IN, pull_up_down=GPIO.PUD_UP)       # öka volym
+GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)       # minska volym
+GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)       # change mode, volume, octave
+
+
 
 
 # function to redefine index from firebase in main loop later
@@ -123,7 +128,7 @@ def validate_synth_password():
             Device = root.child(f'{macAdress}')
             CurrentUser = Device.child('CurrentUser').child('User').get()
             User = Device.child('users').child(f'{CurrentUser}')
-            User_password = User.child('synthPassword').get()
+            User_password = User.child('SynthPassword').get()
 
             print("Type password:")
             speak("Type password")
@@ -197,6 +202,7 @@ def Download_Chords(index):
 
 # uploading song to firebase
 def Upload_file(name):
+    path = rf"/home/pi/Desktop/programming/cloudwave/sound"
     upload_path = rf"{current_user}/Saved_Music/{name}.wav"
     blob = bucket.blob(upload_path)
     blob.upload_from_filename(fr'{path}\output.wav')
@@ -214,6 +220,30 @@ def Update_Chords(index):
         FXBoard.append(pygame.mixer.Sound(temp_file))
         print(f"finished downloading {note['note']}.wav")
     return FXBoard
+
+
+recording = []
+
+
+def record(sound, state):
+    path = rf"/home/pi/Desktop/programming/cloudwave/sound"
+    if state:
+        recording.append(sound)
+    else:
+        # Open the WAV file for writing
+        with wave.open(fr"{path}\new_song.wav", "wb") as wav_file:
+            # Set the number of channels and sample width
+            wav_file.setnchannels(2)
+            wav_file.setsampwidth(2)        # 2 or 4
+            wav_file.setframerate(44100)    # 44100 or 48000
+
+            # Write each sound to the WAV file
+            for sound in recording:
+                sound_data = sound.get_raw()
+                wav_file.writeframes(sound_data)
+        recording.clear()
+        Upload_file("new_song")         # upload to firebase
+        speak("Song uploaded")
 
 
 def change_pitch(Sounds, semitones):
@@ -252,20 +282,39 @@ SoundBoard = change_pitch(SoundBoard, 0)
 SoundBoard = equalizerSet(10, 1, 12)
 
 
-is_recording = False
+is_recording = False    # recording state
+volume_octave = False   # False = volume    True = octave
+octave = 0
+song = None             # appending sounds for recording
 try:
     while True:
+        # change volume or change octave
+        if GPIO.input(16) == 0 and volume_octave is False:                      # change mode
+            volume_octave = True
+        elif GPIO.input(16) == 0 and volume_octave is True:
+            volume_octave = False
+        if GPIO.input(15) == 0 and volume_octave is False:                      # minska volym
+            change_volume(15)
+        elif GPIO.input(14) == 0 and volume_octave is False:                    # öka volym
+            change_volume(14)
+        elif GPIO.input(15) == 0 and volume_octave is False and octave >= 0:    # minska octav
+            octave -= 1
+            SoundBoard = change_pitch(SoundBoard, octave)
+        elif GPIO.input(14) == 0 and volume_octave is True and octave <= 0:     # öka octav
+            octave += 1
+            SoundBoard = change_pitch(SoundBoard, octave)
+
         # recording music and uploading
         if GPIO.input(17) == 0 and is_recording is False:
             speak("Recording in progress")
-            # record()
             is_recording = True
         elif GPIO.input(17) == 0 and is_recording is True:
+            record(None, False)     # stop recording, save, and upload
             speak("Recording stopped")
             is_recording = False
-        # if is_recording is True:
-        #     data = default_mic.record(numframes=num_frames, samplerate=44100)
-        #     frames.append(data)
+        if is_recording is True:
+            record(Song, True)
+            Song = None
 
         # change soundboard if index differ
         if chord_index != Check_index():
@@ -273,61 +322,73 @@ try:
             SoundBoard = Download_Chords(chord_index)
 
         # update equalizer values
-        if bass != Check_bass() or treble != Check_treble() or mid != Check_mid():
-            bass = Check_bass()
-            treble = Check_treble()
-            mid = Check_mid()
-            SoundBoard = equalizerSet(bass, mid, treble)
+        #if bass != Check_bass() or treble != Check_treble() or mid != Check_mid():
+        #    bass = Check_bass()
+        #    treble = Check_treble()
+        #    mid = Check_mid()
+        #    SoundBoard = equalizerSet(bass, mid, treble)
 
 
         # if button pressed, play sound
         if GPIO.input(4) == 0:
             print("Sound C")      # play sound
             SoundBoard[0].play()                # plays sound at index
+            Song = SoundBoard[0]
             time.sleep(0.25)
         if GPIO.input(27) == 0:
             print("Sound D")      # play sound
             SoundBoard[1].play()   # plays sound at index
+            Song = SoundBoard[1]
             time.sleep(0.25)
         if GPIO.input(22) == 0:
             print("Sound E")      # play sound
             SoundBoard[2].play()   # plays sound at index
+            Song = SoundBoard[2]
             time.sleep(0.25)
         if GPIO.input(5) == 0:
             print("Sound F")  # play sound
             SoundBoard[3].play()  # plays sound at index
+            Song = SoundBoard[3]
             time.sleep(0.25)
         if GPIO.input(6) == 0:
             print("Sound G")      # play sound
             SoundBoard[4].play()  # plays sound at index
+            Song = SoundBoard[4]
             time.sleep(0.25)
         if GPIO.input(26) == 0:
             print("Sound A")      # play sound
             SoundBoard[5].play()  # plays sound at index
+            Song = SoundBoard[5]
             time.sleep(0.25)
         if GPIO.input(23) == 0:
             print("Sound B")      # play sound
             SoundBoard[6].play()  # plays sound at index
+            Song = SoundBoard[6]
             time.sleep(0.25)
         if GPIO.input(25) == 0:
             print("Sound C# ")      # play sound
             SoundBoard[7].play()  # plays sound at index
+            Song = SoundBoard[7]
             time.sleep(0.25)
         if GPIO.input(2) == 0:
             print("Sound D#")      # play sound
             SoundBoard[8].play()  # plays sound at index
+            Song = SoundBoard[8]
             time.sleep(0.25)
         if GPIO.input(3) == 0:
             print("Sound F#")      # play sound
             SoundBoard[9].play()  # plays sound at index
+            Song = SoundBoard[9]
             time.sleep(0.25)
         if GPIO.input(24) == 0:
             print("Sound G#")      # play sound
             SoundBoard[10].play()  # plays sound at index
+            Song = SoundBoard[10]
             time.sleep(0.25)
         if GPIO.input(8) == 0:
             print("Sound A#")      # play sound
             SoundBoard[11].play()  # plays sound at index
+            Song = SoundBoard[11]
             time.sleep(0.25)
 except KeyboardInterrupt:
     pygame.mixer.stop()
