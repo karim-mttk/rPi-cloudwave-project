@@ -189,7 +189,10 @@ def Download_Chords(index):
     FXBoard = []
     for note in Chords:
         # specify the path to the audio file in Firebase Storage
-        storage_path = rf"{current_user}/sounds{index}/{note['note']}.wav"
+        if index <= 2:      # global instruments
+            storage_path = rf"sounds{index}/{note['note']}.wav"
+        else:               # user specific instruments
+            storage_path = rf"users/{current_user}/sounds{index}/{note['note']}.wav"
 
         # download the sound file to a temporary file
         temp_file = rf"/home/pi/Desktop/cloudwave/sound/{note['note']}.wav"
@@ -205,7 +208,7 @@ def Download_Chords(index):
 # uploading song to firebase
 def Upload_file(name):
     path = rf"/home/pi/Desktop/cloudwave/sound"
-    upload_path = rf"{current_user}/Saved_Music/{name}.wav"
+    upload_path = rf"users/{current_user}/Saved_Music/{name}.wav"
     blob = bucket.blob(upload_path)
     blob.upload_from_filename(fr'{path}\{name}.wav')
     print("Upload successful")
@@ -220,7 +223,7 @@ def Update_Chords(index):
 
         # load the sound file into Pygame mixer and save it
         FXBoard.append(pygame.mixer.Sound(temp_file))
-        print(f"finished downloading {note['note']}.wav")
+        # print(f"finished downloading {note['note']}.wav")
     return FXBoard
 
 
@@ -297,7 +300,7 @@ try:
         elif GPIO.input(14) == 0 and volume_octave is False:
             time.sleep(0.25)                    # öka volym
             change_volume(14)
-        if GPIO.input(16) == 0 and octave >=0:
+        if GPIO.input(16) == 0 and octave >= 0:
             time.sleep(0.25)    # minska octav
             octave -= 1
             SoundBoard = change_pitch(SoundBoard, octave)
@@ -324,11 +327,11 @@ try:
             SoundBoard = Download_Chords(chord_index)
 
         # update equalizer values
-        #if bass != Check_bass() or treble != Check_treble() or mid != Check_mid():
-        #    bass = Check_bass()
-        #    treble = Check_treble()
-        #    mid = Check_mid()
-        #    SoundBoard = equalizerSet(bass, mid, treble)
+        if bass != Check_bass() or treble != Check_treble() or mid != Check_mid():
+            bass = Check_bass()
+            treble = Check_treble()
+            mid = Check_mid()
+            SoundBoard = equalizerSet(bass, mid, treble)
 
 
         # if button pressed, play sound

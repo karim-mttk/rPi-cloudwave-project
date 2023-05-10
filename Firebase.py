@@ -102,8 +102,10 @@ def Download_Chords(index):
     for note in Chords:
         # specify the path to the audio file in Firebase Storage
 
-        # storage_path = rf"sounds{index}/folder/{note['note']}.wav"
-        storage_path = rf"{current_user}/sounds{index}/{note['note']}.wav"
+        if index <= 2:  # global instruments
+            storage_path = rf"sounds{index}/{note['note']}.wav"
+        else:  # user specific instruments
+            storage_path = rf"users/{current_user}/sounds{index}/{note['note']}.wav"
 
         # download the sound file to a temporary file
         # change to RPi storage path later
@@ -182,7 +184,7 @@ def record(sound, state):
         recording.append(sound)
     else:
         # Open the WAV file for writing
-        with wave.open(fr"{path}\output2.wav", "wb") as wav_file:
+        with wave.open(fr"{path}\new_song.wav", "wb") as wav_file:
             # Set the number of channels and sample width
             wav_file.setnchannels(2)
             wav_file.setsampwidth(2)    # 2 or 4
@@ -192,13 +194,15 @@ def record(sound, state):
             for sound in recording:
                 sound_data = sound.get_raw()
                 wav_file.writeframes(sound_data)
-
+        recording.clear()
+        Upload_file("new_song")         # upload to firebase
+        speak("Song uploaded")
 
 def Upload_file(name):
     path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
-    upload_path = rf"{current_user}/Saved_Music/test/{name}.wav"
+    upload_path = rf"users/{current_user}/Saved_Music/{name}.wav"
     blob = bucket.blob(upload_path)
-    blob.upload_from_filename(fr'{path}\output2.wav')
+    blob.upload_from_filename(fr'{path}\{name}.wav')
     print("Upload successful")
     speak("Upload successful")
 
@@ -234,7 +238,7 @@ speak("Recording stopped")
 Upload_file("new song test")
 
 # Save the recorded audio in a WAV file
-path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
+path2 = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
 # path = fr'/home/pi/Desktop/programming/cloudwave'
 
 # converter()
@@ -247,7 +251,7 @@ path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektme
 print(f"finished uploading new_song.wav")
 
 # multiple chord concept
-with wave.open(fr"{path}\test.wav", "wb") as wav_file:
+with wave.open(fr"{path2}\test.wav", "wb") as wav_file:
     # Set the number of channels and sample width
     wav_file.setnchannels(2)  # 1 or 2
     wav_file.setsampwidth(2)  # 2 or 4
