@@ -17,7 +17,7 @@ def equalizerSet(bass, mid, treble):
     equalizer = []
     for note in Chords:
         # Load the audio file
-        sound = AudioSegment.from_file(rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav", format="wav")
+        sound = AudioSegment.from_file(rf"/home/pi/Desktop/cloudwave/sound/{note['note']}.wav", format="wav")
     
         # Apply the gain adjustments to the audio
         adjusted_sound = sound \
@@ -26,6 +26,6 @@ def equalizerSet(bass, mid, treble):
             .apply_gain(mid)
             
         # Export the adjusted sound
-        adjusted_sound.export(rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav", format="wav")
-        equalizer.append(pygame.mixer.Sound(rf"/home/pi/Desktop/programming/cloudwave/sound/{note['note']}.wav"))
+        adjusted_sound.export(rf"/home/pi/Desktop/cloudwave/sound/{note['note']}.wav", format="wav")
+        equalizer.append(pygame.mixer.Sound(rf"/home/pi/Desktop/cloudwave/sound/{note['note']}.wav"))
     return equalizer
