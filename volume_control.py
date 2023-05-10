@@ -20,6 +20,6 @@ def change_volume(channel):
 # Add event detection to GPIOs
 GPIO.add_event_detect(14, GPIO.RISING, callback=change_volume)
 GPIO.add_event_detect(15, GPIO.RISING, callback=change_volume)
-# Keep script running
-while True:
-    pass
+# # Keep script running
+# while True:
+    # pass
