@@ -331,7 +331,7 @@ try:
             bass = Check_bass()
             treble = Check_treble()
             mid = Check_mid()
-            SoundBoard = equalizerSet(bass, mid, treble)
+            SoundBoard = equalizerSet(bass, mid, treble, octave)
 
 
         # if button pressed, play sound
