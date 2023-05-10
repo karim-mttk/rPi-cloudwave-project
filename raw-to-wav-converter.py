@@ -5,7 +5,7 @@ path = fr'/home/pi/Desktop/programming/cloudwave'
 
 def converter():
     # Open the raw audio file
-    with open(fr'{path}\input.raw', 'rb') as raw_file:
+    with open(fr'output.raw', 'rb') as raw_file:
         raw_data = raw_file.read()
 
     # Create a new WAV file

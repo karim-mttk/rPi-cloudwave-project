@@ -9,7 +9,7 @@ def record():
         exit(1)
 
     # Run the compiled executable
-    run_process = subprocess.run(["./record"])
+    run_process = subprocess.run(["./record > output.raw"])
     if run_process.returncode != 0:
         print("Execution failed.")
         exit(1)
