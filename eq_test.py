@@ -24,9 +24,9 @@ def equalizerSet(bass, mid, treble, current_octave):
     
         # Apply the gain adjustments to the audio
         adjusted_sound = sound \
-            .low_pass_filter(bass) \
-            .high_pass_filter(treble) \
-            .apply_gain(mid)
+            .low_pass_filter(int(bass)) \
+            .high_pass_filter(int(treble)) \
+            .apply_gain(int(mid))
             
         # Export the adjusted sound
         adjusted_sound.export(rf"/home/pi/Desktop/cloudwave/sound/{note['note']}equalized.wav", format="wav")
