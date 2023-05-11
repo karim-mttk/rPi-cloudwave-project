@@ -200,7 +200,7 @@ def record(sound, state):
 
 def Upload_file(name):
     path = fr"C:\Users\anton\OneDrive\Dokument\1. Skolsaker\0. Projekt och Projektmetoder\Projekt\temp"
-    upload_path = rf"users/{current_user}/Saved_Music/{name}.wav"
+    upload_path = rf"users/{current_user}/Saved_music/{name}.wav"
     blob = bucket.blob(upload_path)
     blob.upload_from_filename(fr'{path}\{name}.wav')
     print("Upload successful")

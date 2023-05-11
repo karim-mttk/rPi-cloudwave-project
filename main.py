@@ -24,8 +24,9 @@ firebase_admin.initialize_app(cred, {'storageBucket': 'cloudwave-test.appspot.co
 
 # create a Firebase Storage client
 bucket = storage.bucket()
-# root = root.child('CloudWave')
 root = db.reference("/")
+root = root.child('CloudWave')
+
 
 # GPIO setup
 GPIO.setwarnings(False)
@@ -208,7 +209,7 @@ def Download_Chords(index):
 # uploading song to firebase
 def Upload_file(name):
     path = rf"/home/pi/Desktop/cloudwave/sound"
-    upload_path = rf"users/{current_user}/Saved_Music/{name}.wav"
+    upload_path = rf"users/{current_user}/Saved_music/{name}.wav"
     blob = bucket.blob(upload_path)
     blob.upload_from_filename(fr'{path}\{name}.wav')
     print("Upload successful")
