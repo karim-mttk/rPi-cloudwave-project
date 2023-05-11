@@ -12,7 +12,7 @@ mixer = alsaaudio.Mixer(control='Headphone', id=0)
 # Define callback function to adjust volume
 def change_volume(channel):
     volume = mixer.getvolume()[0]
-    if channel == 14 and volume < 90:
+    if channel == 14 and volume < 95:
         mixer.setvolume(volume + 5)
     elif channel == 15 and volume > 10:
         mixer.setvolume(volume - 5)
