@@ -326,7 +326,7 @@ try:
             SoundBoard = Download_Chords(chord_index)
 
         # update equalizer values
-        if bass != Check_bass() or treble != Check_treble() or mid != Check_mid():
+        if bass != Check_bass() or treble != Check_treble() or mid != Check_mid() or chord_index != Check_index():
             bass = Check_bass()
             treble = Check_treble()
             mid = Check_mid()
