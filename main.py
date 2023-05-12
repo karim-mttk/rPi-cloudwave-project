@@ -142,8 +142,7 @@ def validate_synth_password():
                 print("Wrong password")
                 speak("Wrong password")
         except:
-            print("Exception, user not found")
-            speak("Exception, user not found")
+            print("Waiting for User")
     return CurrentUser
 
 
@@ -249,7 +248,6 @@ def record(sound, state):
                 wav_file.writeframes(sound_data)
         recording.clear()
         Upload_file("new_song")         # upload to firebase
-        speak("Song uploaded")
 
 
 def change_pitch(Sounds, semitones):
@@ -315,8 +313,8 @@ try:
             speak("Recording in progress")
             is_recording = True
         elif GPIO.input(17) == 0 and is_recording is True:
-            record(None, False)     # stop recording, save, and upload
             speak("Recording stopped")
+            record(None, False)     # stop recording, save, and upload
             is_recording = False
         if is_recording is True and Song is not None:
             record(Song, True)
