@@ -311,7 +311,7 @@ try:
             time.sleep(0.25)
             octave = 1         # cykla fram
             SoundBoard = change_pitch(SoundBoard, octave)
-        elif GPIO.input(15) == 0 and octave == 1:   # set to -1 octave
+        elif GPIO.input(15) == 0 and octave == 1:   # set to -1 octave.
             time.sleep(0.25)
             octave = -1         # cykla fram
             SoundBoard = change_pitch(SoundBoard, octave)
