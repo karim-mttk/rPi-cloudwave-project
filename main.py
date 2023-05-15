@@ -7,7 +7,7 @@ import numpy as np
 from scipy.io.wavfile import write
 import pyttsx3
 from eq_test import equalizerSet
-from volume_control import change_volume
+# from volume_control import change_volume
 from python_Scr_C_record import record
 
 
@@ -43,7 +43,7 @@ GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # B GPIO 23
 GPIO.setup(25, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # C# GPIO 25
 GPIO.setup(2, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # D# GPIO 2
 GPIO.setup(3, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # F# GPIO 3
-GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
+GPIO.setup(7, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # G# GPIO 7
 GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 
 GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # universal knapp
@@ -112,7 +112,7 @@ def type_synth_password():
             print("Sound F#")
             Password += "F#"
             time.sleep(0.25)
-        if GPIO.input(24) == 0:
+        if GPIO.input(7) == 0:
             print("Sound G#")
             Password += "G#"
             time.sleep(0.25)
@@ -396,7 +396,7 @@ try:
             SoundBoard[9].play()  # plays sound at index
             Song = SoundBoard[9]
             time.sleep(0.25)
-        if GPIO.input(24) == 0:
+        if GPIO.input(7) == 0:
             print("Sound G#")      # play sound
             SoundBoard[10].play()  # plays sound at index
             Song = SoundBoard[10]
