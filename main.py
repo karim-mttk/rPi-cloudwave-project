@@ -350,62 +350,62 @@ try:
             print("Sound C")      # play sound
             SoundBoard[0].play()                # plays sound at index
             Song = SoundBoard[0]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(27) == 0:
             print("Sound D")      # play sound
             SoundBoard[1].play()   # plays sound at index
             Song = SoundBoard[1]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(22) == 0:
             print("Sound E")      # play sound
             SoundBoard[2].play()   # plays sound at index
             Song = SoundBoard[2]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(5) == 0:
             print("Sound F")  # play sound
             SoundBoard[3].play()  # plays sound at index
             Song = SoundBoard[3]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(6) == 0:
             print("Sound G")      # play sound
             SoundBoard[4].play()  # plays sound at index
             Song = SoundBoard[4]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(26) == 0:
             print("Sound A")      # play sound
             SoundBoard[5].play()  # plays sound at index
             Song = SoundBoard[5]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(23) == 0:
             print("Sound B")      # play sound
             SoundBoard[6].play()  # plays sound at index
             Song = SoundBoard[6]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(25) == 0:
             print("Sound C# ")      # play sound
             SoundBoard[7].play()  # plays sound at index
             Song = SoundBoard[7]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(2) == 0:
             print("Sound D#")      # play sound
             SoundBoard[8].play()  # plays sound at index
             Song = SoundBoard[8]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(3) == 0:
             print("Sound F#")      # play sound
             SoundBoard[9].play()  # plays sound at index
             Song = SoundBoard[9]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(7) == 0:
             print("Sound G#")      # play sound
             SoundBoard[10].play()  # plays sound at index
             Song = SoundBoard[10]
-            time.sleep(0.25)
+            time.sleep(0.15)
         if GPIO.input(8) == 0:
             print("Sound A#")      # play sound
             SoundBoard[11].play()  # plays sound at index
             Song = SoundBoard[11]
-            time.sleep(0.25)
+            time.sleep(0.15)
 except KeyboardInterrupt:
     pygame.mixer.stop()
     GPIO.cleanup()
