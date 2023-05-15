@@ -49,7 +49,7 @@ GPIO.setup(8, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # A# GPIO 8
 GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # universal knapp
 
 GPIO.setup(14, GPIO.IN, pull_up_down=GPIO.PUD_UP)       # öka volym
-GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)       # minska volym
+GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)       # minska volym ny       : ny oktav cyklar
 GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)       # octav -
 GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)       # octav +
 
@@ -293,19 +293,31 @@ song = None            # appending sounds for recording
 try:
     while True:
         # change volume or change octave
-        if GPIO.input(15) == 0 and volume_octave is False:
-            time.sleep(0.25)                      # minska volym
-            change_volume(15)
-        elif GPIO.input(14) == 0 and volume_octave is False:
-            time.sleep(0.25)                    # öka volym
-            change_volume(14)
-        if GPIO.input(16) == 0 and octave >= 0:
-            time.sleep(0.25)    # minska octav
-            octave -= 1
+        #if GPIO.input(15) == 0 and volume_octave is False:
+        #    time.sleep(0.25)                      # minska volym
+        #    change_volume(15)
+        #elif GPIO.input(14) == 0 and volume_octave is False:
+        #    time.sleep(0.25)                    # öka volym
+        #    change_volume(14)
+        #if GPIO.input(16) == 0 and octave >= 0:
+        #    time.sleep(0.25)    # minska octav
+        #    octave -= 1
+        #    SoundBoard = change_pitch(SoundBoard, octave)
+        #elif GPIO.input(20) == 0 and octave <= 0:
+        #    time.sleep(0.25)     # öka octav
+        #    octave += 1
+        #    SoundBoard = change_pitch(SoundBoard, octave)
+        if GPIO.input(15) == 0 and octave == 0:     # set to +1 octave
+            time.sleep(0.25)
+            octave = 1         # cykla fram
             SoundBoard = change_pitch(SoundBoard, octave)
-        elif GPIO.input(20) == 0 and octave <= 0:
-            time.sleep(0.25)     # öka octav
-            octave += 1
+        elif GPIO.input(15) == 0 and octave == 1:   # set to -1 octave
+            time.sleep(0.25)
+            octave = -1         # cykla fram
+            SoundBoard = change_pitch(SoundBoard, octave)
+        elif GPIO.input(15) == 0 and octave == -1:  # set to 0 octave
+            time.sleep(0.25)
+            octave = 0         # cykla fram
             SoundBoard = change_pitch(SoundBoard, octave)
 
         # recording music and uploading
