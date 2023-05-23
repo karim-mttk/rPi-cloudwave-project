@@ -1,4 +1,4 @@
-#Cloudwave-project
+##Cloud-computing-project:CloudWave
 The goal is to create a cloud-connected musical instrument that represents a synthesizer, offering users the capability to play, customize, and record music. The repository contains Python code for programming the GPIO pins of Raspberry Pi 4. The code is written in Python and utilizes libraries that are compatible with Python scripts. Firebase is utilized for cloud storage, while the graphical user interface (GUI) is developed using CSS, VUE, HTML, and JavaScript.
 
 Contents:
