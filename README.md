@@ -7,5 +7,5 @@ The goal is to create a cloud-connected musical instrument that represents a syn
 3. [Volume Control](https://github.com/karim-mttk/rPi-cloudwave-project/blob/firebase/volume_control.py)
 4. [Main Function](https://github.com/karim-mttk/rPi-cloudwave-project/blob/firebase/main.py)
 5. [GUI](https://github.com/stamley/cloudwave)
-6. [Hardware with custom PCB](https://github.com/karim-mttk/rPi-cloudwave-project/blob/main/hardware.png)
-7. [System Architecture ](https://github.com/karim-mttk/rPi-cloudwave-project/blob/main/database_layout.png)
+6. ![Hardware with custom PCB](https://github.com/karim-mttk/rPi-cloudwave-project/blob/main/hardware.png)
+7. ![System Architecture ](https://github.com/karim-mttk/rPi-cloudwave-project/blob/main/database_layout.png)
